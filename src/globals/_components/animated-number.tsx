@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Typography, TypographyOwnProps } from "@mui/material";
 import { COLORS } from "../utils/colors";
+import styled from "@emotion/styled";
+import { WIDTH_BREAKPOINTS } from "../utils/constants";
 
 interface AnimatedNumberProps {
   value: number;
@@ -32,10 +34,16 @@ const AnimatedNumber: React.FC<AnimatedNumberProps> = ({
   }, [value, duration]);
 
   return (
-    <Typography variant={variant} color="white">
+    <StyledText variant={variant} color="white">
       +{displayValue}%
-    </Typography>
+    </StyledText>
   );
 };
+
+const StyledText = styled(Typography)`
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    font-size: 18px;
+  }
+`;
 
 export default AnimatedNumber;

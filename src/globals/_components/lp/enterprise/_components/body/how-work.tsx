@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { Box, Typography } from "@mui/material";
+import { StyledButton } from "../header/banner";
+import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import useWindowSize from "@/globals/hooks/useWindowSize";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { StyledButton } from "../header/banner";
 
 interface StepCardProps {
   title: string;
@@ -52,17 +53,29 @@ const HowWorkEnterprise = () => {
           title="Cadastre sua empresa"
           step={1}
         />
-        <ChevronRightIcon
-          sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
-        />
+        {width! > 760 ? (
+          <ChevronRightIcon
+            sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
+          />
+        ) : (
+          <KeyboardArrowDownIcon
+            sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
+          />
+        )}
         <StepCard
           description="Sua empresa estará disponível para clientes próximos que buscam o que você oferece."
           title="Seja encontrado"
           step={2}
         />
-        <ChevronRightIcon
-          sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
-        />
+        {width! > 760 ? (
+          <ChevronRightIcon
+            sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
+          />
+        ) : (
+          <KeyboardArrowDownIcon
+            sx={{ fontSize: "55px", color: "white", opacity: 0.1 }}
+          />
+        )}
         <StepCard
           description="Organize todos os agendamentos de clientes em um só lugar."
           title="Agende automaticamente"
@@ -93,6 +106,11 @@ const Container = styled(Box)`
   background-position: center right;
   background-repeat: no-repeat;
   background-size: contain;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    background-position: center bottom;
+    background-size: contain;
+  }
 `;
 
 const StepsContainer = styled(Box)`
@@ -101,12 +119,21 @@ const StepsContainer = styled(Box)`
   align-items: center;
   justify-content: space-between;
   column-gap: 30px;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    flex-direction: column;
+    row-gap: 20px;
+  }
 `;
 
 const StepCardContainer = styled(Box)`
   padding: 1.5rem 0;
   width: calc(100% / 3 - 10px);
   position: relative;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    width: 100%;
+  }
 `;
 
 const Step = styled(Box)`

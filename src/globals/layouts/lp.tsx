@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import HeaderLp from "../_components/lp/header";
+
 import HeadLanding from "../_components/custom-head";
 import useWindowSize from "../hooks/useWindowSize";
 import { Box } from "@mui/material";
@@ -19,7 +19,7 @@ const LandingPageLayout = (props: any) => {
   return (
     <Box>
       <HeadLanding />
-      <HeaderLp />
+
       {children}
       {/* <BuyInfosLp />
       <FooterLp />  */}

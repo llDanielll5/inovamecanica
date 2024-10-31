@@ -26,7 +26,7 @@ export const GoldenLine = styled(Box)`
   background: linear-gradient(
     90deg,
     #deb25f 10%,
-    ${COLORS.GOLD} 20.85%,
+    ${COLORS.BLACK} 20.85%,
     goldenrod 50%,
     #deb25f 82.56%
   );

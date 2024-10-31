@@ -11,15 +11,22 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@heroicons/react": "^2.1.5",
     "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
     "@types/nprogress": "^0.2.3",
+    "axios": "^1.7.7",
+    "cookies-next": "^4.3.0",
+    "formik": "^2.4.6",
     "next": "15.0.2",
     "nprogress": "^0.2.0",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react-imask": "^7.6.1",
     "recoil": "^0.7.7",
-    "uuid": "^11.0.2"
+    "simplebar-react": "^3.2.6",
+    "uuid": "^11.0.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

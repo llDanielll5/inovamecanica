@@ -5,13 +5,16 @@ import BannerEnterprise from "./banner";
 import styled from "@emotion/styled";
 import { InovaLogo } from "@/globals/icons/inova-logo";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
+import useWindowSize from "@/globals/hooks/useWindowSize";
 
 // import { Container } from './styles';
 
-const HeaderLandingPageEnterprise: React.FC = () => {
+const HeaderLandingPageEnterprise = () => {
+  const { width } = useWindowSize();
+
   return (
     <>
-      <TopContacts />
+      {width! > 760 && <TopContacts />}
       <HeaderEnterprise />
       <StyledLogo />
       <BannerEnterprise />

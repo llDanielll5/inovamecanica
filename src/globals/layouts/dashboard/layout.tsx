@@ -7,7 +7,6 @@ import { TopNav } from "./top-nav";
 import { useRecoilState } from "recoil";
 import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import { signOut } from "firebase/auth";
 import axios from "axios";
 
 const SIDE_NAV_WIDTH = 280;

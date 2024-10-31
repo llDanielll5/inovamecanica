@@ -1,66 +1,98 @@
 /* eslint-disable @next/next/no-img-element */
 import PropTypes from "prop-types";
-import { Box, Unstable_Grid2 as Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-
-const gradient = {
-  alignItems: "center",
-  // background: "url(/images/lp/space-1.webp)",
-  backgroundColor: "#c6f4ef",
-  backgroundPosition: "center",
-  backgroundSize: "cover",
-  color: "white",
-  display: "flex",
-  justifyContent: "center",
-  "& img": {
-    maxWidth: "100%",
-  },
-};
-const headerGrid = {
-  // background:
-  //   "url(https://img.freepik.com/free-vector/pastel-gradient-blur-background-vector_53876-174841.jpg?t=st=1721862691~exp=1721866291~hmac=36e380bb72140e4f9f12dcd5d8e79b2a97fe80ce06ba6f95a35ddb9b80600253&w=740)",
-  backgroundColor: "#c6f4ef",
-  backgroundSize: "cover",
-  display: "flex",
-  flexDirection: "column",
-  position: "relative",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "100%",
-};
+import styled from "@emotion/styled";
+import { InovaLogo } from "../icons/inova-logo";
+import useWindowSize from "../hooks/useWindowSize";
+import { WIDTH_BREAKPOINTS } from "../utils/constants";
 
 export const AuthLayout = (props: any) => {
   const { children } = props;
   const router = useRouter();
+  const { width } = useWindowSize();
 
   return (
-    <Box sx={{ display: "flex", flex: "1 1 auto" }}>
-      <Grid
-        container
-        sx={{ flex: "1 1 auto" }}
-        flexDirection={
-          router.asPath === "/auth/register" ? "row-reverse" : "row"
-        }
-      >
-        <Grid xs={12} lg={8} sx={headerGrid}>
-          {children}
-        </Grid>
-        <Grid xs={12} lg={4} sx={gradient}>
-          <Box sx={{ p: 3 }}>
-            <img
-              alt=""
-              src="/images/marie/vertical-logo.png"
-              width={"100%"}
-              onClick={() => window.open("/", "_self", "noreferrer,noopener")}
-              style={{ cursor: "pointer" }}
-            />
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+    <Container>
+      <InnerContainer>
+        <HeaderGrid>{children}</HeaderGrid>
+        <Banner>
+          <ImageBackground
+            src={
+              router.asPath === "/auth/enterprise/login"
+                ? "/images/auth/enterprise/login-banner.png"
+                : "/images/auth/enterprise/register-banner.png"
+            }
+          />
+          <InovaLogo
+            sx={{ fontSize: width! > 760 ? "260px" : "135px", zIndex: 2000 }}
+          />
+        </Banner>
+      </InnerContainer>
+    </Container>
   );
 };
 
 AuthLayout.prototypes = {
   children: PropTypes.node,
 };
+
+const Container = styled(Box)`
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+`;
+
+const InnerContainer = styled(Grid)`
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+  position: relative;
+`;
+
+const HeaderGrid = styled(Grid)`
+  background-color: #f6f6f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 45%;
+  border-top-right-radius: 37px;
+  border-bottom-right-radius: 37px;
+  z-index: 1000;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    width: 100%;
+    height: auto;
+  }
+`;
+
+const Banner = styled(Grid)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const ImageBackground = styled("img")`
+  position: absolute;
+  right: 0;
+  top: 0;
+  object-fit: cover;
+  width: 80%;
+  max-height: 100vh;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    position: relative;
+  }
+`;
+
+const BannerImage = styled(Grid)``;

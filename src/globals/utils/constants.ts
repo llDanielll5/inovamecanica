@@ -1,0 +1,15 @@
+export const CONTACTS = {
+  WHATSAPP: "",
+  EMAIL: "",
+  INSTAGRAM: "",
+  FACEBOOK: "",
+  YOUTUBE: "",
+};
+
+export const WIDTH_BREAKPOINTS = {
+  PHONE: 375,
+  TABLET: 820,
+  DESKTOP: 1024,
+  LARGE_DESKTOP: 1540,
+  ULTRA_LARGE_DESKTOP: 2048,
+};

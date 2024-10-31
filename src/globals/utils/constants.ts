@@ -7,7 +7,8 @@ export const CONTACTS = {
 };
 
 export const WIDTH_BREAKPOINTS = {
-  PHONE: 375,
+  THIN_PHONE: 375,
+  PHONE: 500,
   TABLET: 820,
   DESKTOP: 1024,
   LARGE_DESKTOP: 1540,

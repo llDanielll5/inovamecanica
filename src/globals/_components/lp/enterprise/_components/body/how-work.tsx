@@ -87,6 +87,7 @@ const HowWorkEnterprise = () => {
         variant="contained"
         colors={["#CC7818", "#ECAA5E"]}
         textColor="white"
+        href="/auth/enterprise/login"
       >
         quero fazer parte
       </StyledButton>

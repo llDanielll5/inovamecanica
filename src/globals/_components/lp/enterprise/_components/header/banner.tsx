@@ -31,6 +31,7 @@ const BannerEnterprise = () => {
           variant="contained"
           textColor="white"
           colors={["#CC7818", "#ECAA5E"]}
+          href="/auth/enterprise/login"
           sx={
             width! < 760
               ? {

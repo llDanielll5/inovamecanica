@@ -23,6 +23,10 @@ import * as Yup from "yup";
 import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
 import { COLORS } from "@/globals/utils/colors";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
+import axiosInstance from "@/globals/requests/axios";
+import { ROUTES } from "@/globals/requests/routes";
+import { Authentication } from "@/globals/atoms/auth";
+import { setCookie } from "cookies-next";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -30,7 +34,7 @@ const LoginPage = () => {
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  // const [userData, setUserData] = useRecoilState(UserData);
+  const [auth, setAuth] = useRecoilState(Authentication);
 
   const handleTogglePasswordVisible = (e: any) =>
     setPasswordVisible(!passwordVisible);
@@ -54,13 +58,20 @@ const LoginPage = () => {
         setIsLoading(true);
         setLoadingMsg("Estamos realizando o login...");
 
-        const { data } = await axios.post("/api/user/login", {
+        const { data } = await axiosInstance.post(ROUTES.ENTERPRISE.LOGIN, {
           email: values.email,
           password: values.password,
         });
-        if (data.status === "success") {
-          setIsLoading(false);
-          // setUserData((prev: any) => ({ ...data.user }));
+        setCookie("jwt", data.token);
+
+        if (data.status === "SUCCESS") {
+          setAuth((prev) => ({
+            ...prev,
+            email: values.email,
+            isAuth: true,
+            jwt: data.token,
+            loginType: "ENTERPRISE",
+          }));
         }
       } catch (err: any) {
         setIsLoading(false);
@@ -72,10 +83,10 @@ const LoginPage = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (userData === null) return;
-  //   router.push("/admin");
-  // }, [userData]);
+  useEffect(() => {
+    if (auth.isAuth === false) return;
+    router.push("/admin/enterprise");
+  }, [auth]);
 
   return (
     <>

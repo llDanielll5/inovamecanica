@@ -7,7 +7,7 @@ interface RegisterEnterpriseInterface extends EnterpriseInterface {
 }
 
 const { persistAtom } = recoilPersist({
-  key: "recoil-persist", // chave para o armazenamento no localStorage
+  key: "recoil-register-enterprise", // chave para o armazenamento no localStorage
   storage: typeof window !== "undefined" ? localStorage : undefined,
 });
 

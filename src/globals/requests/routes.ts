@@ -6,6 +6,7 @@ export const ROUTES = {
   ENTERPRISE: {
     LOGIN: `/${API_VERSION}/enterprises/auth/login`,
     REGISTER: `/${API_VERSION}/enterprises/auth/register`,
+    ME: `/${API_VERSION}/enterprises/auth/me`,
     GET: `/${API_VERSION}/enterprises`,
     GET_UNIQUE: (id: string) => `/${API_VERSION}/enterprises/${id}`,
     UPDATE: (id: string) => `/${API_VERSION}/enterprises/${id}`,

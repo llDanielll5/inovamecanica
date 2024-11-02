@@ -5,11 +5,14 @@ import { styled } from "@mui/material/styles";
 import { SideNav } from "./side-nav";
 import { TopNav } from "./top-nav";
 import { useRecoilState } from "recoil";
-import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import axios from "axios";
+import { useLoadUser } from "@/globals/hooks/useLoadUser";
+import {
+  AtomAuthenticationInterface,
+  Authentication,
+} from "@/globals/atoms/auth";
 
-const SIDE_NAV_WIDTH = 280;
+export const SIDE_NAV_WIDTH = 289;
 
 const LayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -27,58 +30,52 @@ const LayoutContainer = styled("div")({
   width: "100%",
 });
 
+const reseted: AtomAuthenticationInterface = {
+  isAuth: false,
+  jwt: "",
+  email: "",
+  loginType: "",
+  me: {},
+};
+
 export const DashboardLayout = (props: any) => {
   const { children } = props;
+  const router = useRouter();
+  let logged = useLoadUser();
   const pathname = usePathname();
   const [openNav, setOpenNav] = useState(false);
-  // const [userData, setUserData] = useRecoilState(UserData);
-  const infosCookie = getCookie("infos1");
-  const [informations, setInformations] = useState(false);
-  const router = useRouter();
+  const [auth, setAuth] = useRecoilState(Authentication);
 
-  const handleAction = () => {
-    alert("teste");
-  };
+  async function logout() {
+    try {
+      setAuth({ ...reseted });
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  }
 
   const handlePathnameChange = useCallback(() => {
     if (openNav) setOpenNav(false);
   }, [openNav]);
 
-  const handleLogout = async () => {
-    setCookie("user", undefined);
-    // setUserData(UserDataDefault);
-    // await signOut(auth);
-    await axios.get("/api/auth/signout");
-    return await router.push("/");
-  };
-
-  // const PersistLogin = async () => {
-  //   let persistance = await handlePersistLogin();
-  //   if (persistance === null) return await handleLogout();
-  //   return setUserData(persistance);
-  // };
-
   useEffect(() => {
     handlePathnameChange();
   }, [pathname]);
 
-  // useEffect(() => {
-  //   PersistLogin();
-  // }, []);
+  useEffect(() => {
+    const handleLogout = async () => {
+      return await logout();
+    };
+
+    if (logged === null || logged) return;
+    if (logged === false) handleLogout();
+  }, [logged]);
 
   return (
     <>
-      <TopNav onNavOpen={() => setOpenNav(true)} logout={handleLogout} />
+      <TopNav onNavOpen={() => setOpenNav(true)} logout={() => {}} />
       <SideNav onClose={() => setOpenNav(false)} open={openNav} />
-      {/* <Fab
-        color="primary"
-        aria-label="add"
-        title="Adicionar Paciente"
-        onClick={handleAction}
-        sx={{ position: "fixed", bottom: "1rem", right: "1rem" }}
-      >
-        <PersonAddIcon />
-      </Fab> */}
       <LayoutRoot>
         <LayoutContainer>{children}</LayoutContainer>
       </LayoutRoot>

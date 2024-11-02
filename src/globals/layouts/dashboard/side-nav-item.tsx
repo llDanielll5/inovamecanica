@@ -29,7 +29,7 @@ export const SideNavItem = (props: any) => {
           justifyContent: "flex-start",
           pl: "16px",
           pr: "16px",
-          py: "6px",
+          py: "16px",
           textAlign: "left",
           width: "100%",
           ...(active && {
@@ -46,7 +46,7 @@ export const SideNavItem = (props: any) => {
             component="span"
             sx={{
               alignItems: "center",
-              color: "neutral.400",
+              color: "white",
               display: "inline-flex",
               justifyContent: "center",
               mr: 2,
@@ -61,10 +61,10 @@ export const SideNavItem = (props: any) => {
         <Box
           component="span"
           sx={{
-            color: "neutral.400",
+            fontFamily: "Open Sans",
+            color: "#939AA6",
             flexGrow: 1,
-            fontFamily: (theme) => theme.typography.fontFamily,
-            fontSize: 14,
+            fontSize: "18px",
             fontWeight: 600,
             lineHeight: "24px",
             whiteSpace: "nowrap",

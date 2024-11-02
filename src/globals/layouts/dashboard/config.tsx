@@ -1,17 +1,10 @@
 import ChartBarIcon from "@heroicons/react/24/solid/ChartBarIcon";
 import CogIcon from "@heroicons/react/24/solid/CogIcon";
-import ShoppingBagIcon from "@heroicons/react/24/solid/ShoppingBagIcon";
-import UserIcon from "@heroicons/react/24/solid/UserIcon";
-import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
-import RecordVoiceOverIcon from "@mui/icons-material/RecordVoiceOver";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import RecentActorsIcon from "@mui/icons-material/RecentActors";
-import ContactsIcon from "@mui/icons-material/Contacts";
-import HealingIcon from "@mui/icons-material/Healing";
-import PunchClockIcon from "@mui/icons-material/PunchClock";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import PaidIcon from "@mui/icons-material/Paid";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import ConstructionIcon from "@mui/icons-material/Construction";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import EmailIcon from "@mui/icons-material/Email";
 import { SvgIcon } from "@mui/material";
 
 export const SideNavLinks = () => {
@@ -19,8 +12,8 @@ export const SideNavLinks = () => {
 
   itens.push(
     {
-      title: "Inicio",
-      path: "/admin",
+      title: "Dashboard",
+      path: "/admin/enterprise",
       icon: (
         <SvgIcon fontSize="small">
           <ChartBarIcon />
@@ -28,71 +21,54 @@ export const SideNavLinks = () => {
       ),
     },
     {
-      title: "Clientes",
-      path: "/admin/clients",
+      title: "Minha empresa",
+      path: "/admin/enterprise/my-enterprise",
       icon: (
         <SvgIcon fontSize="small">
-          <UsersIcon />
+          <StorefrontIcon />
         </SvgIcon>
       ),
     },
     {
-      title: "Produtos",
-      path: "/admin/products",
+      title: "Serviços",
+      path: "/admin/enterprise/services",
       icon: (
         <SvgIcon fontSize="small">
-          <HealingIcon />
+          <ConstructionIcon />
         </SvgIcon>
       ),
     },
     {
-      title: "Vendas",
-      path: "/admin/payments",
+      title: "Mensagens",
+      path: "/admin/enterprise/messages",
       icon: (
         <SvgIcon fontSize="small">
-          <PaidIcon />
+          <EmailIcon />
         </SvgIcon>
       ),
     },
     {
-      title: "Envios",
-      path: "/admin/shippings",
+      title: "Assinaturas",
+      path: "/admin/enterprise/signs",
       icon: (
         <SvgIcon fontSize="small">
-          <LocalShippingIcon />
+          <WorkspacePremiumIcon />
         </SvgIcon>
       ),
     },
     {
-      title: "Caixa",
-      path: "/admin/cashier",
+      title: "Agenda",
+      path: "/admin/enterprise/diary",
       icon: (
         <SvgIcon fontSize="small">
-          <PointOfSaleIcon />
+          <CalendarTodayIcon />
         </SvgIcon>
       ),
     },
+
     {
-      title: "Whatsapp Bot",
-      path: "/admin/whatsapp",
-      icon: (
-        <SvgIcon fontSize="small">
-          <WhatsAppIcon />
-        </SvgIcon>
-      ),
-    },
-    {
-      title: "Conta",
-      path: "/admin/account",
-      icon: (
-        <SvgIcon fontSize="small">
-          <UserIcon />
-        </SvgIcon>
-      ),
-    },
-    {
-      title: "Opções",
-      path: "/admin/settings",
+      title: "Configurações",
+      path: "/admin/enterprise/settings",
       icon: (
         <SvgIcon fontSize="small">
           <CogIcon />

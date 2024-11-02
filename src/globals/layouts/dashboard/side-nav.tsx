@@ -1,29 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 import NextLink from "next/link";
-import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import ChevronUpDownIcon from "@heroicons/react/24/solid/ChevronUpDownIcon";
-
+import { usePathname } from "next/navigation";
 import { SideNavLinks } from "./config";
 import { SideNavItem } from "./side-nav-item";
-import { useRecoilState, useRecoilValue } from "recoil";
-
 import {
   Box,
   Divider,
   Drawer,
   Stack,
-  SvgIcon,
-  Typography,
   useMediaQuery,
   styled,
+  Avatar,
+  Typography,
 } from "@mui/material";
 import SimpleBar from "simplebar-react";
+import { InovaLogo } from "@/globals/icons/inova-logo";
+import { SIDE_NAV_WIDTH } from "./layout";
+
 import { useEffect } from "react";
 import { setCookie } from "cookies-next";
+import { useRecoilValue } from "recoil";
+import { Authentication } from "@/globals/atoms/auth";
 
 const scrollbarStyle = {
-  height: "100%",
   "& .simplebar-content": {
     height: "100%",
   },
@@ -36,53 +36,30 @@ export const SideNav = (props: any) => {
   const { open, onClose } = props;
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
-  // const [userData, setUserData] = useRecoilState(UserData);
+  const auth = useRecoilValue(Authentication);
 
-  // useEffect(() => {
-  //   const handlePersist = async () => {
-  //     const user = await handleLoginPersistance();
-  //     if (user === null) {
-  //       setCookie("user", undefined);
-  //       setUserData(UserDataDefault);
-  //       return;
-  //     }
-  //     setUserData({ ...user });
-  //   };
-
-  //   handlePersist();
-  // }, []);
+  console.log(auth);
 
   const content = (
     <Scrollbar sx={scrollbarStyle}>
-      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
         <Box sx={{ p: 3 }}>
-          <Box display="flex" alignItems={"center"}>
-            <Box component={NextLink} href="/admin">
-              <img
-                src="/images/marie/marie-mascot.png"
-                alt=""
-                style={{ height: 40, width: 40 }}
-              />
+          <Box display="flex" alignItems={"center"} width={"100%"}>
+            <Box
+              component={NextLink}
+              href="/parceiros"
+              width={"100%"}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <InovaLogo sx={{ fontSize: "120px" }} />
             </Box>
-            <Typography color="white" variant="subtitle1" ml={1}>
-              Marie Papelaria Dashboard
-            </Typography>
           </Box>
-          <NameContainer>
-            <div>
-              {/* <Typography color="inherit" variant="subtitle1">
-                {userData?.name}
-              </Typography> */}
-              <Typography color="neutral.400" variant="body2">
-                {/* {getUserTypeRole(userData?.userType)} */}
-              </Typography>
-            </div>
-            <SvgIcon fontSize="small" sx={{ color: "neutral.500" }}>
-              <ChevronUpDownIcon />
-            </SvgIcon>
-          </NameContainer>
         </Box>
-        <Divider sx={{ borderColor: "neutral.700" }} />
+
         <Box component="nav" sx={{ flexGrow: 1, px: 2, py: 3 }}>
           <Stack
             component="ul"
@@ -112,7 +89,25 @@ export const SideNav = (props: any) => {
             })}
           </Stack>
         </Box>
-        <Divider sx={{ borderColor: "neutral.700" }} />
+        <Box sx={{ p: "0 2rem" }}>
+          <Divider sx={{ borderColor: "rgba(255,255,255,0.24)" }} />
+          <Box display={"flex"} alignItems={"center"} my={"30px"} columnGap={2}>
+            <Avatar src="">A</Avatar>
+            <Stack direction={"column"}>
+              <Typography variant="body1" fontWeight={600} color="white">
+                Nome Oficina
+              </Typography>
+              <Typography
+                variant="caption"
+                fontFamily={"Open Sans"}
+                fontWeight={600}
+                color="#848484"
+              >
+                oficina@email.com
+              </Typography>
+            </Stack>
+          </Box>
+        </Box>
       </Box>
     </Scrollbar>
   );
@@ -126,7 +121,7 @@ export const SideNav = (props: any) => {
           sx: {
             backgroundColor: "neutral.900",
             color: "common.white",
-            width: 280,
+            width: 289,
           },
         }}
         variant="permanent"
@@ -145,10 +140,9 @@ export const SideNav = (props: any) => {
         sx: {
           backgroundColor: "neutral.800",
           color: "common.white",
-          width: 280,
+          width: 289,
         },
       }}
-      sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
       variant="temporary"
     >
       {content}
@@ -161,15 +155,7 @@ SideNav.propTypes = {
   open: PropTypes.bool,
 };
 
-const Scrollbar = styled(SimpleBar)``;
-
-const NameContainer = styled(Box)`
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  margin-top: 16px;
-  padding: 12px;
+const Scrollbar = styled(SimpleBar)`
+  background-color: #002449;
+  overflow-y: hidden;
 `;

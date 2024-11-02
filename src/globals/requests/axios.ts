@@ -20,6 +20,7 @@ axiosInstance.interceptors.request.use(
     config.baseURL = serverUrl;
     let jwt = getCookie("jwt");
     if (jwt) config.headers.Authorization = `Bearer ${jwt}`;
+    config.headers["Content-Type"] = "application/json";
     return config;
   },
   (error) => Promise.reject(error)

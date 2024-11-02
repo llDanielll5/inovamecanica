@@ -28,22 +28,15 @@ import axios from "axios";
 import { ufValues } from "@/globals/mocks/auth/enterprise";
 import { getViaCepInfo } from "@/globals/requests";
 import { BorderLinearProgress } from "./step1";
+import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
 
 const RegisterPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  // const [userData, setUserData] = useRecoilState(UserData);
-
-  const handleTogglePasswordVisible = (e: any) =>
-    setPasswordVisible(!passwordVisible);
-
-  const handleToggleConfirmPasswordVisible = (e: any) => {
-    setConfirmPasswordVisible(!confirmPasswordVisible);
-  };
+  const [registerEnterpriseData, setRegisterEnterpriseData] =
+    useRecoilState(RegisterEnterprise);
 
   const formik = useFormik({
     initialValues: {
@@ -67,19 +60,26 @@ const RegisterPage = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // setIsLoading(true);
-        // setLoadingMsg("Estamos realizando o login...");
-
-        // const { data } = await axios.post("/api/user/login", {
-        //   email: values.email,
-        //   password: values.password,
-        // });
-        // if (data.status === "success") {
-        //   setIsLoading(false);
-        //   // setUserData((prev: any) => ({ ...data.user }));
-        // }
-
-        router.push("/auth/enterprise/register/step3");
+        const replacedPhone = values.phone
+          .replaceAll(")", "")
+          .replaceAll("(", "")
+          .replaceAll("-", "")
+          .replaceAll(" ", "");
+        const replacedCEP = values.cep.replaceAll("-", "");
+        setRegisterEnterpriseData((prev: any) => ({
+          ...prev,
+          phone: replacedPhone,
+          address: {
+            cep: replacedCEP,
+            city: values.city,
+            complement: values.complement,
+            line1: values.line1,
+            neighbor: values.neighbor,
+            number: values.number,
+            uf: values.uf,
+          },
+          stage: 3,
+        }));
       } catch (err: any) {
         setIsLoading(false);
         setErrorMsg(err.response.data.error ?? err.error);
@@ -106,9 +106,28 @@ const RegisterPage = () => {
     }
   }, [formik.values.cep]);
 
+  const onStageChanged = useCallback(() => {
+    if (registerEnterpriseData === null) return;
+    else {
+      const { stage } = registerEnterpriseData;
+
+      if (stage === 2) {
+        router.push("/auth/enterprise/register/step2");
+      } else if (stage === 3) {
+        router.push("/auth/enterprise/register/step3");
+      } else if (stage === 4) {
+        router.push("/auth/enterprise/register/finish");
+      } else return;
+    }
+  }, [registerEnterpriseData?.stage, registerEnterpriseData]);
+
   useEffect(() => {
     getViaCepAddress();
   }, [getViaCepAddress, formik.values.cep]);
+
+  useEffect(() => {
+    onStageChanged();
+  }, [onStageChanged]);
 
   return (
     <>

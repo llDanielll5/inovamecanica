@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -19,12 +19,12 @@ import { useRecoilState } from "recoil";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingComponent from "@/globals/_components/loading-component";
-import axios from "axios";
-import * as Yup from "yup";
+import { COLORS } from "@/globals/utils/colors";
 import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import { TextCNPJCustom } from "@/globals/_components/customTextFields";
-import { COLORS } from "@/globals/utils/colors";
+import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
+import * as Yup from "yup";
 
 const enterpriseType = [
   { value: "CAR_WASH", text: "Lava Jato" },
@@ -38,7 +38,8 @@ const RegisterPage = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  // const [userData, setUserData] = useRecoilState(UserData);
+  const [registerEnterpriseData, setRegisterEnterpriseData] =
+    useRecoilState(RegisterEnterprise);
 
   const handleTogglePasswordVisible = (e: any) =>
     setPasswordVisible(!passwordVisible);
@@ -73,19 +74,18 @@ const RegisterPage = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        // setIsLoading(true);
-        // setLoadingMsg("Estamos realizando o login...");
-
-        // const { data } = await axios.post("/api/user/login", {
-        //   email: values.email,
-        //   password: values.password,
-        // });
-        // if (data.status === "success") {
-        //   setIsLoading(false);
-        //   // setUserData((prev: any) => ({ ...data.user }));
-        // }
-
-        router.push("/auth/enterprise/register/step2");
+        const replaceCNPJ = values.cnpj
+          .replaceAll(".", "")
+          .replaceAll("/", "")
+          .replaceAll("-", "");
+        setRegisterEnterpriseData((prev: any) => ({
+          ...prev,
+          cnpj: replaceCNPJ,
+          email: values.email,
+          password: values.password,
+          type: values.type,
+          stage: 2,
+        }));
       } catch (err: any) {
         setIsLoading(false);
         setErrorMsg(err.response.data.error ?? err.error);
@@ -96,10 +96,24 @@ const RegisterPage = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (userData === null) return;
-  //   router.push("/admin");
-  // }, [userData]);
+  const onStageChanged = useCallback(() => {
+    if (registerEnterpriseData === null) return;
+    else {
+      const { stage } = registerEnterpriseData;
+
+      if (stage === 2) {
+        router.push("/auth/enterprise/register/step2");
+      } else if (stage === 3) {
+        router.push("/auth/enterprise/register/step3");
+      } else if (stage === 4) {
+        router.push("/auth/enterprise/register/finish");
+      } else return;
+    }
+  }, [registerEnterpriseData?.stage, registerEnterpriseData]);
+
+  useEffect(() => {
+    onStageChanged();
+  }, [onStageChanged]);
 
   return (
     <>

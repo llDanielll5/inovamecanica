@@ -20,41 +20,52 @@ import { COLORS } from "@/globals/utils/colors";
 import { AuthLayout } from "@/globals/layouts/auth";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
+import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
 import { BorderLinearProgress } from "./step1";
 import { useDropzone } from "react-dropzone";
 import { useRecoilState } from "recoil";
+import { ROUTES } from "@/globals/requests/routes";
+import { getCNPJInformations } from "../../../../globals/requests";
 import LoadingComponent from "@/globals/_components/loading-component";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CloseIcon from "@mui/icons-material/Close";
-import * as Yup from "yup";
-import axios from "axios";
 import useWindowSize from "@/globals/hooks/useWindowSize";
+import imageCompression from "browser-image-compression";
+import axiosInstance from "@/globals/requests/axios";
+import { useUploadFileWithFirebase } from "@/globals/hooks/useUploadFileWithFirebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storage } from "@/globals/requests/firebase";
+import { Timestamp } from "firebase/firestore";
+import useMultiImageUpload from "@/globals/hooks/useMultiImageUploadWithFirebase";
 
 const RegisterPage = () => {
   const router = useRouter();
   const { width } = useWindowSize();
+  const { uploadImages, uploadStates } = useMultiImageUpload();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   // const [userData, setUserData] = useRecoilState(UserData);
   const [dataUrl, setDataUrl] = useState<any[] | null>([]);
-  const [uploadedUrl, setUploadedUrl] = useState<any | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [imagesUploaded, setImagesUploaded] = useState<string[]>([]);
+  const [imagesUploadProgress, setImagesUploadProgress] = useState<number[]>(
+    []
+  );
+  const [registerEnterpriseData, setRegisterEnterpriseData] =
+    useRecoilState(RegisterEnterprise);
 
   const onDrop = useCallback((acceptedFiles: any[]) => {
-    acceptedFiles.forEach((file) => {
+    acceptedFiles.forEach((file: File) => {
       const reader = new FileReader();
       reader.onabort = () => console.log("file aborted");
       reader.onerror = () => console.log("file error");
-      reader.onprogress = (load) => {
-        console.log({ load });
-      };
-      reader.onloadstart = (e) => {
-        console.log({ start: e });
-      };
       reader.onload = () => {
         const binaryStr = reader.result;
         setDataUrl((prev) => [...(prev ?? []), binaryStr]);
+        setFiles((prev) => [...(prev ?? []), file]);
+        setImagesUploadProgress((prev) => [...(prev ?? []), 0]);
       };
       reader.readAsDataURL(file);
     });
@@ -63,36 +74,85 @@ const RegisterPage = () => {
   const { getRootProps, acceptedFiles, getInputProps, isDragActive } =
     useDropzone({ onDrop });
 
-  const uploadImage = async () => {
-    // meu upload
-    console.log(acceptedFiles);
+  const handleSubmit = async () => {
+    if (dataUrl?.length === 0 || dataUrl === null) return;
+
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      let images = files;
+      let imagesCompressed: any[] = [];
+
+      const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      setLoadingMsg("Estamos comprimindo suas imagens...");
+
+      for (let i = 0; i < images.length; i++) {
+        const compressedFile = await imageCompression(
+          images[i] as File,
+          options
+        );
+        imagesCompressed.push(compressedFile);
+      }
+
+      await uploadImages(imagesCompressed);
+      setLoadingMsg("Estamos validando seu CNPJ...");
+
+      // const cnpjValues = await getCNPJInformations(
+      //   registerEnterpriseData?.cnpj!
+      // );
+
+      setLoadingMsg("Estamos finalizando seu cadastro...");
+      if (registerEnterpriseData?.images?.length === 0) {
+        setIsLoading(false);
+        return alert("A imagem não subiu para o banco");
+      }
+
+      setRegisterEnterpriseData((prev: any) => ({
+        ...prev,
+        // enterprise: {
+        //   companyName: cnpjValues?.companyName,
+        //   phantasyName: cnpjValues?.phantasyName,
+        //   startDate: cnpjValues?.startDate,
+        //   status: cnpjValues?.status,
+        //   cnae: cnpjValues?.cnae,
+        // },
+      }));
+
+      const result = await axiosInstance.post(
+        ROUTES.ENTERPRISE.REGISTER,
+        registerEnterpriseData
+      );
+
+      if (result.data.status === "SUCCESS") {
+        setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
+      }
+
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      console.log(error?.message ?? error ?? error?.code);
+    }
   };
 
   const formik = useFormik({
     initialValues: {
       submit: null,
     },
-    // validationSchema: Yup.object({}),
     onSubmit: async (values, helpers) => {
       try {
-        // setIsLoading(true);
-        // setLoadingMsg("Estamos realizando o login...");
+        if (dataUrl?.length === 0) return alert("Adicione ao menos uma imagem");
 
-        // const { data } = await axios.post("/api/user/login", {
-        //   email: values.email,
-        //   password: values.password,
-        // });
-        // if (data.status === "success") {
-        //   setIsLoading(false);
-        //   // setUserData((prev: any) => ({ ...data.user }));
-        // }
-
-        if (dataUrl?.length === 0) {
-          return alert("Adicione ao menos uma imagem");
-        }
-
-        uploadImage();
-        router.push("/auth/enterprise/register/finish");
+        setIsLoading(true);
+        setLoadingMsg("Estamos criando seu cadastro...");
+        await handleSubmit();
       } catch (err: any) {
         setIsLoading(false);
         setErrorMsg(err.response.data.error ?? err.error);
@@ -102,6 +162,48 @@ const RegisterPage = () => {
       }
     },
   });
+
+  const onStageChanged = useCallback(() => {
+    if (registerEnterpriseData === null) return;
+    else {
+      const { stage } = registerEnterpriseData;
+
+      if (stage === 2) {
+        router.push("/auth/enterprise/register/step2");
+      } else if (stage === 3) {
+        router.push("/auth/enterprise/register/step3");
+      } else if (stage === 4) {
+        router.push("/auth/enterprise/register/finish");
+      } else return;
+    }
+  }, [registerEnterpriseData?.stage, registerEnterpriseData]);
+
+  const getUploadState = useCallback(async () => {
+    uploadStates.map((upload, i) => {
+      let imagesUploadProgressClone = imagesUploadProgress;
+      imagesUploadProgressClone[i] = upload.progress;
+      setImagesUploadProgress(imagesUploadProgressClone);
+
+      if (upload.downloadURL !== null) {
+        setImagesUploaded((prev) => [
+          ...(prev ?? []),
+          upload.downloadURL as string,
+        ]);
+        setRegisterEnterpriseData((prev: any) => ({
+          ...prev,
+          images: imagesUploaded,
+        }));
+      }
+    });
+  }, [uploadStates]);
+
+  useEffect(() => {
+    onStageChanged();
+  }, [onStageChanged]);
+
+  useEffect(() => {
+    getUploadState();
+  }, [getUploadState]);
 
   return (
     <>
@@ -174,7 +276,10 @@ const RegisterPage = () => {
                     <Typography variant="h6" color="grey">
                       12MB
                     </Typography>
-                    <ImageProgress variant="determinate" value={90} />
+                    <ImageProgress
+                      variant="determinate"
+                      value={imagesUploadProgress[index]}
+                    />
                   </InnerImageUploadedBox>
 
                   <Box>
@@ -263,6 +368,7 @@ const ImagesUploadedContainer = styled(Box)`
 `;
 const ImageUploaded = styled(Card)`
   display: flex;
+  justify-content: space-between;
   column-gap: 1rem;
   background-color: #e2e2e2;
   border-radius: 8px;

@@ -1,3 +1,4 @@
+import { EnterpriseInterface } from "@/globals/types/enterprise";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
@@ -6,8 +7,8 @@ const { persistAtom } = recoilPersist({
   storage: typeof window !== "undefined" ? localStorage : undefined,
 });
 
-export const Authentication = atom({
+export const Authentication = atom<EnterpriseInterface | null>({
   key: "Authentication",
-  default: "", // valor padrão
+  default: null,
   effects_UNSTABLE: [persistAtom], // aplicando o efeito de persistência
 });

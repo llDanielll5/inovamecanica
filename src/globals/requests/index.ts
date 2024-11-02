@@ -1,3 +1,5 @@
+import { BrasilAPICNPJResponse } from "../types/cnpj";
+
 export const getViaCepInfo = async (val: string) => {
   if (val.length === 8) {
     try {
@@ -15,5 +17,23 @@ export const getViaCepInfo = async (val: string) => {
         };
       }
     } catch (error) {}
+  }
+};
+
+export const getCNPJInformations = async (cnpj: string) => {
+  try {
+    const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
+    const json: BrasilAPICNPJResponse = await res.json();
+    if (json) {
+      return {
+        companyName: json.razao_social,
+        phantasyName: json.nome_fantasia,
+        status: json.descricao_situacao_cadastral,
+        startDate: json.data_inicio_atividade,
+        cnae: json.cnae_fiscal_descricao,
+      };
+    }
+  } catch (error) {
+    console.log({ error });
   }
 };

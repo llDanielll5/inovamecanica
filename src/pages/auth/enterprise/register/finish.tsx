@@ -31,6 +31,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import useWindowSize from "@/globals/hooks/useWindowSize";
 import { CheckedIcon } from "@/globals/icons";
+import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -38,11 +39,32 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  // const [userData, setUserData] = useRecoilState(UserData);
+  const [registerEnterpriseData, setRegisterEnterpriseData] =
+    useRecoilState(RegisterEnterprise);
 
   const handleFinishRegister = () => {
+    setRegisterEnterpriseData(null);
     router.push("/parceiros");
   };
+
+  const onStageChanged = useCallback(() => {
+    if (registerEnterpriseData === null) return;
+    else {
+      const { stage } = registerEnterpriseData;
+
+      if (stage === 2) {
+        router.push("/auth/enterprise/register/step2");
+      } else if (stage === 3) {
+        router.push("/auth/enterprise/register/step3");
+      } else if (stage === 4) {
+        router.push("/auth/enterprise/register/finish");
+      } else return;
+    }
+  }, [registerEnterpriseData?.stage, registerEnterpriseData]);
+
+  useEffect(() => {
+    onStageChanged();
+  }, [onStageChanged]);
 
   return (
     <>

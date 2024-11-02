@@ -43,3 +43,22 @@ export const TextCepCustom = forwardRef<HTMLInputElement, CustomProps>(
     );
   }
 );
+
+export const TextCNPJCustom = forwardRef<HTMLInputElement, CustomProps>(
+  function TextCNPJCustom(props, ref) {
+    const { onChange, ...other } = props;
+    return (
+      <IMask
+        {...other}
+        mask={"00.000.000/0000-00"}
+        definitions={{
+          "#": /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) =>
+          onChange({ target: { name: props.name, value } })
+        }
+      />
+    );
+  }
+);

@@ -22,6 +22,7 @@ import axios from "axios";
 import * as Yup from "yup";
 import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
 import { COLORS } from "@/globals/utils/colors";
+import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -161,7 +162,7 @@ const LoginPage = () => {
                 fontWeight={700}
                 variant="body2"
                 component={"a"}
-                href="#"
+                href="/auth/enterprise/reset-password"
                 color={COLORS.PRIMARY.MAIN}
               >
                 Esqueceu a senha?
@@ -182,7 +183,7 @@ const LoginPage = () => {
 
           <HaveAccount mt={"24px"}>
             Ainda não tem conta?{" "}
-            <a href="/auth/enterprise/register">Cadastre-se agora</a>
+            <a href="/auth/enterprise/register/step1">Cadastre-se agora</a>
           </HaveAccount>
         </StyledForm>
       </Container>
@@ -194,6 +195,11 @@ LoginPage.getLayout = (page: any) => <AuthLayout>{page}</AuthLayout>;
 
 const Container = styled(Box)`
   padding: 1rem 3.6rem;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    padding: 3rem 1rem;
+    height: 100%;
+  }
 `;
 
 const StyledForm = styled("form")`

@@ -89,7 +89,7 @@ const BannerInformations = styled(Box)`
 
 type StyledButtonType = {
   colors?: string[];
-  textColor: string;
+  textColor?: string;
 };
 export const StyledButton = styled(Button)<StyledButtonType>(
   ({ colors, textColor }) => ({

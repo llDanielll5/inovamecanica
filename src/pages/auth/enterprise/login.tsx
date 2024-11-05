@@ -26,7 +26,7 @@ import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import axiosInstance from "@/globals/requests/axios";
 import { ROUTES } from "@/globals/requests/routes";
 import { Authentication } from "@/globals/atoms/auth";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -82,11 +82,6 @@ const LoginPage = () => {
       }
     },
   });
-
-  useEffect(() => {
-    if (auth.isAuth === false) return;
-    router.push("/admin/enterprise");
-  }, [auth]);
 
   return (
     <>

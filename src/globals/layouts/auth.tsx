@@ -6,11 +6,22 @@ import styled from "@emotion/styled";
 import { InovaLogo } from "../icons/inova-logo";
 import useWindowSize from "../hooks/useWindowSize";
 import { WIDTH_BREAKPOINTS } from "../utils/constants";
+import { useEffect } from "react";
+import { useRecoilValue } from "recoil";
+import { Authentication } from "../atoms/auth";
+import { getCookie } from "cookies-next";
 
 export const AuthLayout = (props: any) => {
   const { children } = props;
   const router = useRouter();
   const { width } = useWindowSize();
+  const auth = useRecoilValue(Authentication);
+
+  useEffect(() => {
+    const jwt = getCookie("jwt");
+    if (auth.isAuth === false && jwt !== undefined) return;
+    router.push("/admin/enterprise");
+  }, [auth]);
 
   return (
     <Container>

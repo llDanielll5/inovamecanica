@@ -11,6 +11,7 @@ import {
   AtomAuthenticationInterface,
   Authentication,
 } from "@/globals/atoms/auth";
+import { setCookie } from "cookies-next";
 
 export const SIDE_NAV_WIDTH = 289;
 
@@ -49,7 +50,8 @@ export const DashboardLayout = (props: any) => {
   async function logout() {
     try {
       setAuth({ ...reseted });
-      router.push("/");
+      setCookie("jwt", undefined);
+      router.push("/parceiros");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -74,7 +76,7 @@ export const DashboardLayout = (props: any) => {
 
   return (
     <>
-      <TopNav onNavOpen={() => setOpenNav(true)} logout={() => {}} />
+      <TopNav onNavOpen={() => setOpenNav(true)} logout={logout} />
       <SideNav onClose={() => setOpenNav(false)} open={openNav} />
       <LayoutRoot>
         <LayoutContainer>{children}</LayoutContainer>

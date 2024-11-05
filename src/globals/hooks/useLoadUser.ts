@@ -24,16 +24,16 @@ export const useLoadUser = () => {
       try {
         const { data } = await axiosInstance(ROUTES.ENTERPRISE.ME);
         if (data) {
-          setAuth((prev) => ({ ...prev, me: data }));
           setIsLogged(true);
+          setAuth((prev) => ({ ...prev, me: data }));
         } else {
-          setAuth({ ...reseted });
           setIsLogged(false);
+          setAuth({ ...reseted });
         }
       } catch (error) {
-        console.error("Failed to load user:", error);
-        setAuth({ ...reseted });
         setIsLogged(false);
+        setAuth({ ...reseted });
+        console.error("Failed to load user:", error);
       }
     };
 

@@ -14,6 +14,7 @@ import { AppleStoreIcon, PlayStoreIcon } from "@/globals/icons";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import useWindowSize from "@/globals/hooks/useWindowSize";
+import { useRouter } from "next/router";
 
 const footerMenuLinks = [
   { href: "#", text: "Home" },
@@ -51,25 +52,36 @@ const PlatformsDistributionCard = (props: {
 };
 
 const FooterLandingPageEnterprise = () => {
+  const router = useRouter();
   const { width } = useWindowSize();
   return (
     <Container>
       <Grid container columnSpacing={width! > 760 ? 4 : 0} rowGap={6}>
-        <Grid item lg={3}>
+        <Grid item lg={3} xs={6}>
           <Typography variant="h6" color="white" pb={3}>
             Instale nosso aplicativo
           </Typography>
 
           <PlatformsContainer>
-            <PlatformsDistributionCard
+            {/* <PlatformsDistributionCard
               icon={
                 <AppleStoreIcon sx={{ color: "white", fontSize: "20px" }} />
               }
               platformName="Apple Store"
-            />
-            <PlatformsDistributionCard
+            /> */}
+            {/* <PlatformsDistributionCard
               icon={<PlayStoreIcon sx={{ color: "white", fontSize: "20px" }} />}
               platformName="Play Store"
+            /> */}
+            <StyledPlatformDistribution
+              src="/images/landing-page/enterprise/google-play.png"
+              alt=""
+              onClick={() => router.push("#")}
+            />
+            <StyledPlatformDistribution
+              src="/images/landing-page/enterprise/app-store.png"
+              alt=""
+              onClick={() => router.push("#")}
             />
           </PlatformsContainer>
         </Grid>
@@ -233,19 +245,6 @@ const PlatformCardContainer = styled(Box)`
   align-self: flex-start;
 `;
 
-const PlatformsContainer = styled(Box)`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  row-gap: 0.8rem;
-
-  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
-    flex-direction: row;
-    justify-content: space-between;
-    column-gap: 1.1rem;
-  }
-`;
-
 const DoubleText = styled(Typography)`
   span {
     font-family: "Yantramanav";
@@ -279,6 +278,37 @@ const FooterTerms = styled(Stack)`
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
     justify-content: space-between;
     width: 100%;
+  }
+`;
+
+const PlatformsContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.8rem;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 2.5%;
+  }
+`;
+
+const StyledPlatformDistribution = styled("img")`
+  min-width: 185px;
+  max-width: 185px;
+  max-height: 55px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: 0.3s;
+  scale: 0.95;
+
+  :hover {
+    scale: 1;
+  }
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    max-width: 45%;
+    max-height: 50px;
   }
 `;
 

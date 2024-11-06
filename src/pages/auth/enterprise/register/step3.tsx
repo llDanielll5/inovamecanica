@@ -102,7 +102,18 @@ const RegisterPage = () => {
       //   registerEnterpriseData?.cnpj!
       // );
 
-      await getUploadState();
+      let uploadedImages: string[] = [];
+
+      uploadStates.map((upload, i) => {
+        console.log({ "Upload Image": upload });
+        let imagesUploadProgressClone = imagesUploadProgress;
+        imagesUploadProgressClone[i] = upload.progress;
+        setImagesUploadProgress(imagesUploadProgressClone);
+
+        if (upload.downloadURL !== null) {
+          uploadedImages.push(upload.downloadURL);
+        }
+      });
 
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
@@ -113,6 +124,7 @@ const RegisterPage = () => {
         //   status: cnpjValues?.status,
         //   cnae: cnpjValues?.cnae,
         // },
+        images: uploadedImages,
       }));
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
@@ -181,29 +193,17 @@ const RegisterPage = () => {
     }
   }, [registerEnterpriseData?.stage, registerEnterpriseData]);
 
-  const getUploadState = useCallback(async () => {
-    uploadStates.map((upload, i) => {
-      console.log({ "Upload Image": upload });
-      let imagesUploadProgressClone = imagesUploadProgress;
-      imagesUploadProgressClone[i] = upload.progress;
-      setImagesUploadProgress(imagesUploadProgressClone);
+  // const getUploadState = useCallback(async () => {
 
-      if (upload.downloadURL !== null) {
-        setRegisterEnterpriseData((prev: any) => ({
-          ...prev,
-          images: [...(prev?.images ?? {}), upload.downloadURL as string],
-        }));
-      }
-    });
-  }, [uploadStates]);
+  // }, [uploadStates]);
 
   useEffect(() => {
     onStageChanged();
   }, [onStageChanged]);
 
-  useEffect(() => {
-    getUploadState();
-  }, [getUploadState]);
+  // useEffect(() => {
+  //   getUploadState();
+  // }, [getUploadState]);
 
   return (
     <>

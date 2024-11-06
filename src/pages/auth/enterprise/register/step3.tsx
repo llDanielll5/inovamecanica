@@ -118,7 +118,7 @@ const RegisterPage = () => {
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
 
-      console.log({ "Dados Empresa": registerEnterpriseData, uploadedImages });
+      console.log({ "Dados Empresa": registerEnterpriseData });
 
       if (registerEnterpriseData?.images?.length === 0) {
         setIsLoading(false);
@@ -195,7 +195,12 @@ const RegisterPage = () => {
       }
     });
 
-    return uploadedImages;
+    console.log({ uploadedImages });
+
+    setRegisterEnterpriseData((prev: any) => ({
+      ...prev,
+      images: uploadedImages,
+    }));
   }, [uploadStates]);
 
   useEffect(() => {

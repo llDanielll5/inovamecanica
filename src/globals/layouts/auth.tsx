@@ -19,7 +19,7 @@ export const AuthLayout = (props: any) => {
 
   useEffect(() => {
     const jwt = getCookie("jwt");
-    if (auth.isAuth === false && jwt !== undefined) return;
+    if (auth.isAuth === false || !jwt) return;
     router.push("/admin/enterprise");
   }, [auth]);
 

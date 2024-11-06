@@ -77,12 +77,6 @@ const RegisterPage = () => {
   const handleSubmit = async () => {
     if (dataUrl?.length === 0 || dataUrl === null) return;
 
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
-
     try {
       let images = files;
       let imagesCompressed: any[] = [];
@@ -109,12 +103,6 @@ const RegisterPage = () => {
       //   registerEnterpriseData?.cnpj!
       // );
 
-      setLoadingMsg("Estamos finalizando seu cadastro...");
-      if (registerEnterpriseData?.images?.length === 0) {
-        setIsLoading(false);
-        return alert("A imagem não subiu para o banco");
-      }
-
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
         // enterprise: {
@@ -125,6 +113,15 @@ const RegisterPage = () => {
         //   cnae: cnpjValues?.cnae,
         // },
       }));
+
+      setLoadingMsg("Estamos finalizando seu cadastro...");
+
+      await getUploadState();
+
+      if (registerEnterpriseData?.images?.length === 0) {
+        setIsLoading(false);
+        return alert("A imagem não subiu para o banco");
+      }
 
       const result = await axiosInstance.post(
         ROUTES.ENTERPRISE.REGISTER,
@@ -200,10 +197,6 @@ const RegisterPage = () => {
   useEffect(() => {
     onStageChanged();
   }, [onStageChanged]);
-
-  useEffect(() => {
-    getUploadState();
-  }, [getUploadState]);
 
   return (
     <>

@@ -140,7 +140,8 @@ const RegisterPage = () => {
   };
 
   const handleDeleteImage = (index: number) => {
-    return dataUrl?.filter((item, i) => index !== i);
+    let filter = dataUrl?.filter((item, i) => index !== i);
+    setDataUrl(filter as any[]);
   };
 
   const formik = useFormik({

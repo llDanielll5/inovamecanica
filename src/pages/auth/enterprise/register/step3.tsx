@@ -115,6 +115,8 @@ const RegisterPage = () => {
         }
       });
 
+      console.log({ uploadedImages });
+
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
         // enterprise: {

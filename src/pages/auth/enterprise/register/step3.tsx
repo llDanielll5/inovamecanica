@@ -134,7 +134,7 @@ const RegisterPage = () => {
         return alert("A imagem não subiu para o banco");
       }
 
-      console.log({ "Dados Empresa": registerEnterpriseData });
+      console.log({ "Dados Empresa": registerEnterpriseData, uploadedImages });
 
       const result = await axiosInstance.post(
         ROUTES.ENTERPRISE.REGISTER,

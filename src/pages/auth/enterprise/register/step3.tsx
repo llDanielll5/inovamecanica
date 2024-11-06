@@ -139,6 +139,10 @@ const RegisterPage = () => {
     }
   };
 
+  const handleDeleteImage = (index: number) => {
+    return dataUrl?.filter((item, i) => index !== i);
+  };
+
   const formik = useFormik({
     initialValues: {
       submit: null,
@@ -277,7 +281,7 @@ const RegisterPage = () => {
 
                   <Box>
                     <Tooltip title={`Excluir foto `}>
-                      <IconButton>
+                      <IconButton onClick={() => handleDeleteImage(index)}>
                         <CloseIcon />
                       </IconButton>
                     </Tooltip>

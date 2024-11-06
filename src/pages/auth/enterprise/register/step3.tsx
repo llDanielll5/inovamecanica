@@ -102,20 +102,7 @@ const RegisterPage = () => {
       //   registerEnterpriseData?.cnpj!
       // );
 
-      let uploadedImages: string[] = [];
-
-      uploadStates.map((upload, i) => {
-        console.log({ "Upload Image": upload });
-        let imagesUploadProgressClone = imagesUploadProgress;
-        imagesUploadProgressClone[i] = upload.progress;
-        setImagesUploadProgress(imagesUploadProgressClone);
-
-        if (upload.downloadURL !== null) {
-          uploadedImages.push(upload.downloadURL);
-        }
-      });
-
-      console.log({ uploadedImages });
+      const uploadedImages = await getUploadState();
 
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
@@ -195,17 +182,30 @@ const RegisterPage = () => {
     }
   }, [registerEnterpriseData?.stage, registerEnterpriseData]);
 
-  // const getUploadState = useCallback(async () => {
+  const getUploadState = useCallback(async () => {
+    let uploadedImages: string[] = [];
 
-  // }, [uploadStates]);
+    uploadStates.map((upload, i) => {
+      console.log({ "Upload Image": upload });
+      let imagesUploadProgressClone = imagesUploadProgress;
+      imagesUploadProgressClone[i] = upload.progress;
+      setImagesUploadProgress(imagesUploadProgressClone);
+
+      if (upload.downloadURL !== null) {
+        uploadedImages.push(upload.downloadURL);
+      }
+    });
+
+    return uploadedImages;
+  }, [uploadStates]);
 
   useEffect(() => {
     onStageChanged();
   }, [onStageChanged]);
 
-  // useEffect(() => {
-  //   getUploadState();
-  // }, [getUploadState]);
+  useEffect(() => {
+    getUploadState();
+  }, [getUploadState]);
 
   return (
     <>

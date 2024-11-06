@@ -184,19 +184,12 @@ const RegisterPage = () => {
 
   const getUploadState = useCallback(async () => {
     uploadStates.map((upload, i) => {
-      let imagesUploadProgressClone = imagesUploadProgress;
-      imagesUploadProgressClone[i] = upload.progress;
-      setImagesUploadProgress(imagesUploadProgressClone);
-
       if (upload.downloadURL !== null) {
         setImagesUploaded((prev) => [
           ...(prev ?? []),
           upload.downloadURL as string,
         ]);
-        setRegisterEnterpriseData((prev: any) => ({
-          ...prev,
-          images: imagesUploaded,
-        }));
+        console.log({ "Download Image Url": upload.downloadURL });
       }
     });
   }, [uploadStates]);

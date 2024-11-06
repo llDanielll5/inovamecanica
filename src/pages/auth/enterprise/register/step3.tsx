@@ -123,12 +123,14 @@ const RegisterPage = () => {
         return alert("A imagem não subiu para o banco");
       }
 
+      console.log({ "Dados Empresa": registerEnterpriseData });
+
       const result = await axiosInstance.post(
         ROUTES.ENTERPRISE.REGISTER,
         registerEnterpriseData
       );
 
-      if (result.data.status === "SUCCESS") {
+      if (result) {
         setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
       }
 

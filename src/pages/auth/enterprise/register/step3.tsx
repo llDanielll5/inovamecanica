@@ -49,7 +49,6 @@ const RegisterPage = () => {
   // const [userData, setUserData] = useRecoilState(UserData);
   const [dataUrl, setDataUrl] = useState<any[] | null>([]);
   const [files, setFiles] = useState<File[]>([]);
-  const [imagesUploaded, setImagesUploaded] = useState<string[]>([]);
   const [imagesUploadProgress, setImagesUploadProgress] = useState<number[]>(
     []
   );
@@ -184,12 +183,15 @@ const RegisterPage = () => {
 
   const getUploadState = useCallback(async () => {
     uploadStates.map((upload, i) => {
+      let imagesUploadProgressClone = imagesUploadProgress;
+      imagesUploadProgressClone[i] = upload.progress;
+      setImagesUploadProgress(imagesUploadProgressClone);
+
       if (upload.downloadURL !== null) {
-        setImagesUploaded((prev) => [
-          ...(prev ?? []),
-          upload.downloadURL as string,
-        ]);
-        console.log({ "Download Image Url": upload.downloadURL });
+        setRegisterEnterpriseData((prev: any) => ({
+          ...prev,
+          images: [...(prev ?? []), upload.downloadURL as string],
+        }));
       }
     });
   }, [uploadStates]);

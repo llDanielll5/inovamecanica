@@ -115,8 +115,6 @@ const RegisterPage = () => {
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
 
-      await getUploadState();
-
       if (registerEnterpriseData?.images?.length === 0) {
         setIsLoading(false);
         return alert("A imagem não subiu para o banco");
@@ -199,6 +197,10 @@ const RegisterPage = () => {
   useEffect(() => {
     onStageChanged();
   }, [onStageChanged]);
+
+  useEffect(() => {
+    getUploadState();
+  }, [getUploadState]);
 
   return (
     <>

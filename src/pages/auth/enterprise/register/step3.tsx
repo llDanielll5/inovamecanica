@@ -102,6 +102,8 @@ const RegisterPage = () => {
       //   registerEnterpriseData?.cnpj!
       // );
 
+      await getUploadState();
+
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
         // enterprise: {
@@ -181,6 +183,7 @@ const RegisterPage = () => {
 
   const getUploadState = useCallback(async () => {
     uploadStates.map((upload, i) => {
+      console.log({ "Upload Image": upload });
       let imagesUploadProgressClone = imagesUploadProgress;
       imagesUploadProgressClone[i] = upload.progress;
       setImagesUploadProgress(imagesUploadProgressClone);
@@ -188,7 +191,7 @@ const RegisterPage = () => {
       if (upload.downloadURL !== null) {
         setRegisterEnterpriseData((prev: any) => ({
           ...prev,
-          images: [...(prev ?? []), upload.downloadURL as string],
+          images: [...(prev?.images ?? {}), upload.downloadURL as string],
         }));
       }
     });

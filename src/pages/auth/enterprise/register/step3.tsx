@@ -37,18 +37,20 @@ import { useUploadFileWithFirebase } from "@/globals/hooks/useUploadFileWithFire
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/globals/requests/firebase";
 import { Timestamp } from "firebase/firestore";
-import useMultiImageUpload from "@/globals/hooks/useMultiImageUploadWithFirebase";
+import useMultiImageUpload, {
+  UploadState,
+} from "@/globals/hooks/useMultiImageUploadWithFirebase";
 
 const RegisterPage = () => {
   const router = useRouter();
   const { width } = useWindowSize();
-  const { uploadImages, uploadStates } = useMultiImageUpload();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   // const [userData, setUserData] = useRecoilState(UserData);
   const [dataUrl, setDataUrl] = useState<any[] | null>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const [uploadStates, setUploadStates] = useState<UploadState[]>([]);
   const [imagesUploadProgress, setImagesUploadProgress] = useState<number[]>(
     []
   );
@@ -95,14 +97,12 @@ const RegisterPage = () => {
         imagesCompressed.push(compressedFile);
       }
 
-      await uploadImages(imagesCompressed);
+      await uploadMultipleImages(imagesCompressed);
       setLoadingMsg("Estamos validando seu CNPJ...");
 
       // const cnpjValues = await getCNPJInformations(
       //   registerEnterpriseData?.cnpj!
       // );
-
-      const uploadedImages = await getUploadState();
 
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
@@ -113,30 +113,28 @@ const RegisterPage = () => {
         //   status: cnpjValues?.status,
         //   cnae: cnpjValues?.cnae,
         // },
-        images: uploadedImages,
+        images: uploadStates.map((imgs) => imgs.downloadURL),
       }));
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
 
-      await getUploadState().then(async () => {
-        console.log({ "Dados Empresa": registerEnterpriseData });
+      console.log({ "Dados Empresa": registerEnterpriseData });
 
-        if (registerEnterpriseData?.images?.length === 0) {
-          setIsLoading(false);
-          return alert("A imagem não subiu para o banco");
-        }
-
-        const result = await axiosInstance.post(
-          ROUTES.ENTERPRISE.REGISTER,
-          registerEnterpriseData
-        );
-
-        if (result) {
-          setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
-        }
-
+      if (registerEnterpriseData?.images?.length === 0) {
         setIsLoading(false);
-      });
+        return alert("A imagem não subiu para o banco");
+      }
+
+      const result = await axiosInstance.post(
+        ROUTES.ENTERPRISE.REGISTER,
+        registerEnterpriseData
+      );
+
+      if (result) {
+        setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
+      }
+
+      setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
       console.log(error?.message ?? error ?? error?.code);
@@ -184,32 +182,70 @@ const RegisterPage = () => {
     }
   }, [registerEnterpriseData?.stage, registerEnterpriseData]);
 
-  const getUploadState = useCallback(async () => {
-    let uploadedImages: string[] = [];
+  const uploadMultipleImages = useCallback(async (files: File[]) => {
+    const uploadPromises = files.map((file) => {
+      return new Promise<void>((resolve, reject) => {
+        const reference = `/enterprise/${registerEnterpriseData?.cnpj}/images/${
+          Timestamp.now().seconds
+        }`;
+        const storageRef = ref(storage, reference);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
-    uploadStates.map((upload, i) => {
-      let imagesUploadProgressClone = imagesUploadProgress;
-      imagesUploadProgressClone[i] = upload.progress;
-      setImagesUploadProgress(imagesUploadProgressClone);
+        setUploadStates((prev) => [
+          ...prev,
+          {
+            fileName: file.name,
+            progress: 0,
+            downloadURL: null,
+            error: null,
+          },
+        ]);
 
-      if (upload.downloadURL !== null) {
-        uploadedImages.push(upload.downloadURL);
-      }
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setUploadStates((prev) =>
+              prev.map((state) =>
+                state.fileName === file.name ? { ...state, progress } : state
+              )
+            );
+          },
+          (error) => {
+            setUploadStates((prev) =>
+              prev.map((state) =>
+                state.fileName === file.name
+                  ? { ...state, error: error.message }
+                  : state
+              )
+            );
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            setUploadStates((prev) =>
+              prev.map((state) =>
+                state.fileName === file.name ? { ...state, downloadURL } : state
+              )
+            );
+            resolve();
+          }
+        );
+      });
     });
 
-    setRegisterEnterpriseData((prev: any) => ({
-      ...prev,
-      images: uploadedImages,
-    }));
-  }, [uploadStates]);
+    try {
+      await Promise.all(uploadPromises);
+      console.log("All images uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading one or more images:", error);
+    }
+  }, []);
 
   useEffect(() => {
     onStageChanged();
   }, [onStageChanged]);
-
-  useEffect(() => {
-    getUploadState();
-  }, [getUploadState]);
 
   return (
     <>

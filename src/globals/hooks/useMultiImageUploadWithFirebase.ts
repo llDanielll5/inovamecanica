@@ -5,7 +5,7 @@ import { useRecoilValue } from "recoil";
 import { RegisterEnterprise } from "../atoms/auth/register-enterprise";
 import { Timestamp } from "firebase/firestore";
 
-interface UploadState {
+export interface UploadState {
   fileName: string;
   progress: number;
   downloadURL: string | null;

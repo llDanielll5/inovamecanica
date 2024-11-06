@@ -118,23 +118,25 @@ const RegisterPage = () => {
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
 
-      console.log({ "Dados Empresa": registerEnterpriseData });
+      await getUploadState().then(async () => {
+        console.log({ "Dados Empresa": registerEnterpriseData });
 
-      if (registerEnterpriseData?.images?.length === 0) {
+        if (registerEnterpriseData?.images?.length === 0) {
+          setIsLoading(false);
+          return alert("A imagem não subiu para o banco");
+        }
+
+        const result = await axiosInstance.post(
+          ROUTES.ENTERPRISE.REGISTER,
+          registerEnterpriseData
+        );
+
+        if (result) {
+          setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
+        }
+
         setIsLoading(false);
-        return alert("A imagem não subiu para o banco");
-      }
-
-      const result = await axiosInstance.post(
-        ROUTES.ENTERPRISE.REGISTER,
-        registerEnterpriseData
-      );
-
-      if (result) {
-        setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
-      }
-
-      setIsLoading(false);
+      });
     } catch (error: any) {
       setIsLoading(false);
       console.log(error?.message ?? error ?? error?.code);
@@ -194,8 +196,6 @@ const RegisterPage = () => {
         uploadedImages.push(upload.downloadURL);
       }
     });
-
-    console.log({ uploadedImages });
 
     setRegisterEnterpriseData((prev: any) => ({
       ...prev,

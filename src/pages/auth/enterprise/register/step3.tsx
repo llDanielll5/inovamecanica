@@ -118,12 +118,12 @@ const RegisterPage = () => {
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
 
+      console.log({ "Dados Empresa": registerEnterpriseData, uploadedImages });
+
       if (registerEnterpriseData?.images?.length === 0) {
         setIsLoading(false);
         return alert("A imagem não subiu para o banco");
       }
-
-      console.log({ "Dados Empresa": registerEnterpriseData, uploadedImages });
 
       const result = await axiosInstance.post(
         ROUTES.ENTERPRISE.REGISTER,
@@ -186,7 +186,6 @@ const RegisterPage = () => {
     let uploadedImages: string[] = [];
 
     uploadStates.map((upload, i) => {
-      console.log({ "Upload Image": upload });
       let imagesUploadProgressClone = imagesUploadProgress;
       imagesUploadProgressClone[i] = upload.progress;
       setImagesUploadProgress(imagesUploadProgressClone);

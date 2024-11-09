@@ -1,9 +1,46 @@
 import { BrasilAPICNPJResponse } from "../types/cnpj";
 
-export const getViaCepInfo = async (val: string) => {
-  if (val.length === 8) {
+export interface CNPJAPIResponse {
+  updated: Date;
+  taxId: string;
+  alias: null;
+  founded: string;
+  head: true;
+  company: {
+    members: [];
+    id: number;
+    name: string;
+    equity: number;
+    nature: { id: number; text: string };
+    size: { id: number; acronym: string; text: string };
+    simples: { optant: boolean; since: null };
+    simei: { optant: boolean; since: null };
+  };
+  statusDate: string;
+  status: { id: number; text: string };
+  address: {
+    municipality: number;
+    street: string;
+    number: string;
+    district: string;
+    city: string;
+    state: string;
+    details: null;
+    zip: string;
+    country: { id: number; name: string };
+  };
+  mainActivity: { id: number; text: string };
+  phones: { area: string; number: string }[];
+  emails: { address: string; domain: string }[];
+  sideActivities: { id: number; text: string }[];
+  registrations: [];
+  suframa: [];
+}
+
+export const getViaCepInfo = async (cep: string) => {
+  if (cep.length === 8) {
     try {
-      const res = await fetch(`https://viacep.com.br/ws/${val}/json/`);
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
       const json = await res.json();
       if (json) {
         return {
@@ -12,7 +49,7 @@ export const getViaCepInfo = async (val: string) => {
           complement: json.complemento,
           line1: json.logradouro,
           uf: json.uf,
-          cep: val,
+          cep: cep,
           address: `${json.logradouro}, ${json.bairro} ${json.complemento}, ${json.localidade} - ${json.uf}`,
         };
       }
@@ -22,15 +59,15 @@ export const getViaCepInfo = async (val: string) => {
 
 export const getCNPJInformations = async (cnpj: string) => {
   try {
-    const res = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`);
-    const json: BrasilAPICNPJResponse = await res.json();
+    const res = await fetch(`https://open.cnpja.com/office/${cnpj}`);
+    const json: CNPJAPIResponse = await res.json();
     if (json) {
       return {
-        companyName: json.razao_social,
-        phantasyName: json.nome_fantasia,
-        status: json.descricao_situacao_cadastral,
-        startDate: json.data_inicio_atividade,
-        cnae: json.cnae_fiscal_descricao,
+        companyName: json.company.name,
+        phantasyName: json.company.name,
+        status: json.status.text,
+        startDate: json.founded,
+        cnae: json.mainActivity.text,
       };
     }
   } catch (error) {

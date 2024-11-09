@@ -34,7 +34,12 @@ import useWindowSize from "@/globals/hooks/useWindowSize";
 import imageCompression from "browser-image-compression";
 import axiosInstance from "@/globals/requests/axios";
 import { useUploadFileWithFirebase } from "@/globals/hooks/useUploadFileWithFirebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { storage } from "@/globals/requests/firebase";
 import { Timestamp } from "firebase/firestore";
 import useMultiImageUpload, {
@@ -97,23 +102,41 @@ const RegisterPage = () => {
         imagesCompressed.push(compressedFile);
       }
 
-      await uploadMultipleImages(imagesCompressed);
+      // await uploadMultipleImages(imagesCompressed);
+
+      for (let i = 0; i < files.length; i++) {
+        const reference = `/enterprise/${registerEnterpriseData?.cnpj}/images/${
+          Timestamp.now().seconds
+        }`;
+        const storageRef = ref(storage, reference);
+
+        await uploadBytes(storageRef, files[i]).then(async (snapshot) => {
+          await getDownloadURL(snapshot.ref).then((downloadURL) => {
+            setRegisterEnterpriseData((prev: any) => ({
+              ...prev,
+              images: [...(prev?.images ?? []), downloadURL],
+            }));
+          });
+        });
+      }
+
       setLoadingMsg("Estamos validando seu CNPJ...");
 
-      // const cnpjValues = await getCNPJInformations(
-      //   registerEnterpriseData?.cnpj!
-      // );
+      const cnpjValues = await getCNPJInformations(
+        registerEnterpriseData?.cnpj!
+      );
+
+      console.log({ uploadStates });
 
       setRegisterEnterpriseData((prev: any) => ({
         ...prev,
-        // enterprise: {
-        //   companyName: cnpjValues?.companyName,
-        //   phantasyName: cnpjValues?.phantasyName,
-        //   startDate: cnpjValues?.startDate,
-        //   status: cnpjValues?.status,
-        //   cnae: cnpjValues?.cnae,
-        // },
-        images: uploadStates.map((imgs) => imgs.downloadURL),
+        enterprise: {
+          companyName: cnpjValues?.companyName,
+          phantasyName: cnpjValues?.phantasyName,
+          startDate: cnpjValues?.startDate,
+          status: cnpjValues?.status,
+          cnae: cnpjValues?.cnae,
+        },
       }));
 
       setLoadingMsg("Estamos finalizando seu cadastro...");
@@ -125,15 +148,12 @@ const RegisterPage = () => {
         return alert("A imagem não subiu para o banco");
       }
 
-      const result = await axiosInstance.post(
+      const { data } = await axiosInstance.post(
         ROUTES.ENTERPRISE.REGISTER,
         registerEnterpriseData
       );
 
-      if (result) {
-        setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
-      }
-
+      setRegisterEnterpriseData((prev: any) => ({ ...prev, stage: 4 }));
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
@@ -182,66 +202,15 @@ const RegisterPage = () => {
     }
   }, [registerEnterpriseData?.stage, registerEnterpriseData]);
 
-  const uploadMultipleImages = useCallback(async (files: File[]) => {
-    const uploadPromises = files.map((file) => {
-      return new Promise<void>((resolve, reject) => {
-        const reference = `/enterprise/${registerEnterpriseData?.cnpj}/images/${
-          Timestamp.now().seconds
-        }`;
-        const storageRef = ref(storage, reference);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+  // const uploadMultipleImages = useCallback(async (files: File[]) => {
 
-        setUploadStates((prev) => [
-          ...prev,
-          {
-            fileName: file.name,
-            progress: 0,
-            downloadURL: null,
-            error: null,
-          },
-        ]);
-
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress =
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setUploadStates((prev) =>
-              prev.map((state) =>
-                state.fileName === file.name ? { ...state, progress } : state
-              )
-            );
-          },
-          (error) => {
-            setUploadStates((prev) =>
-              prev.map((state) =>
-                state.fileName === file.name
-                  ? { ...state, error: error.message }
-                  : state
-              )
-            );
-            reject(error);
-          },
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            setUploadStates((prev) =>
-              prev.map((state) =>
-                state.fileName === file.name ? { ...state, downloadURL } : state
-              )
-            );
-            resolve();
-          }
-        );
-      });
-    });
-
-    try {
-      await Promise.all(uploadPromises);
-      console.log("All images uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading one or more images:", error);
-    }
-  }, []);
+  //   try {
+  //     await Promise.all(uploadPromises);
+  //     console.log("All images uploaded successfully");
+  //   } catch (error) {
+  //     console.error("Error uploading one or more images:", error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     onStageChanged();
@@ -314,9 +283,9 @@ const RegisterPage = () => {
                   />
 
                   <InnerImageUploadedBox>
-                    <Typography variant="h6">Nome do arquivo.png</Typography>
+                    <Typography variant="h6">{files[index].name}</Typography>
                     <Typography variant="h6" color="grey">
-                      12MB
+                      {`${(files[index].size / 1000000).toFixed(2)}MB`}
                     </Typography>
                     <ImageProgress
                       variant="determinate"

@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-
 import {
   Avatar,
   Badge,
@@ -14,9 +13,12 @@ import {
 import { alpha } from "@mui/material/styles";
 import { AccountPopover } from "./account-popover";
 import { usePopover } from "@/globals/hooks/usePopover";
-import { getInitials } from "@/globals/utils/utils";
+import { useRecoilValue } from "recoil";
+import { Authentication } from "@/globals/atoms/auth";
+import { usePathname } from "next/navigation";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { useEffect } from "react";
 
 const SIDE_NAV_WIDTH = 289;
 const TOP_NAV_HEIGHT = 64;
@@ -24,8 +26,28 @@ const TOP_NAV_HEIGHT = 64;
 export const TopNav = (props: any) => {
   const { onNavOpen, logout } = props;
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const auth = useRecoilValue(Authentication);
   const accountPopover = usePopover();
-  // const userData = useRecoilValue(UserData);
+  const pathname = usePathname();
+
+  const titleTop = () => {
+    switch (pathname) {
+      case "/admin/enterprise":
+        return `Dashboard`;
+      case "/admin/enterprise/my-enterprise":
+        return `Minha Empresa`;
+      case "/admin/enterprise/services":
+        return `Serviços`;
+      case "/admin/enterprise/messages":
+        return `Mensagens`;
+      case "/admin/enterprise/diary":
+        return `Agenda`;
+      case "/admin/enterprise/signs":
+        return `Assinaturas`;
+      case "/admin/enterprise/settings":
+        return `Configurações`;
+    }
+  };
 
   return (
     <>
@@ -43,9 +65,7 @@ export const TopNav = (props: any) => {
           "-webkit-box-shadow": "0px 4px 15px 0px rgba(0,0,0,0.1)",
           "-moz-box-shadow": "0px 4px 15px 0px rgba(0,0,0,0.1)",
           "box-shadow": "0px 4px 15px 0px rgba(0,0,0,0.1)",
-          width: {
-            lg: `calc(100% - ${SIDE_NAV_WIDTH}px)`,
-          },
+          width: { lg: `calc(100% - ${SIDE_NAV_WIDTH}px)` },
           zIndex: (theme: any) => theme.zIndex.appBar,
         }}
       >
@@ -78,7 +98,7 @@ export const TopNav = (props: any) => {
               color="#003366"
               pl={2}
             >
-              Dashboard
+              {titleTop()}
             </Typography>
           </Stack>
 
@@ -86,7 +106,7 @@ export const TopNav = (props: any) => {
             <Tooltip title="Notifications">
               <IconButton sx={{ backgroundColor: "#003366" }}>
                 <Badge
-                  badgeContent={4}
+                  badgeContent={0}
                   color="error"
                   anchorOrigin={{
                     vertical: "top",
@@ -102,14 +122,10 @@ export const TopNav = (props: any) => {
             <Avatar
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}
-              sx={{
-                cursor: "pointer",
-                height: 40,
-                width: 40,
-              }}
-              // src={userData?.profileImage}
+              sx={{ cursor: "pointer", height: 40, width: 40 }}
+              src={""}
             >
-              {/* {getInitials(userData?.name)} */}A
+              A
             </Avatar>
           </Stack>
         </Stack>

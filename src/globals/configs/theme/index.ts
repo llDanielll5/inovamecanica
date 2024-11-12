@@ -26,5 +26,14 @@ export function createTheme() {
     shadows,
     shape: { borderRadius: 8 },
     typography,
+    overrides: {
+      MuiExpansionPanel: {
+        root: {
+          "&:before": {
+            display: "none",
+          },
+        },
+      },
+    },
   });
 }

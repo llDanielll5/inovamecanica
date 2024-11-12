@@ -38,8 +38,6 @@ export const SideNav = (props: any) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
   const auth = useRecoilValue(Authentication);
 
-  console.log(auth);
-
   const content = (
     <Scrollbar sx={scrollbarStyle}>
       <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -60,7 +58,7 @@ export const SideNav = (props: any) => {
           </Box>
         </Box>
 
-        <Box component="nav" sx={{ flexGrow: 1, px: 2, py: 3 }}>
+        <Box component="nav" sx={{ flexGrow: 1, px: 2, pb: 3 }}>
           <Stack
             component="ul"
             spacing={0.5}
@@ -73,7 +71,7 @@ export const SideNav = (props: any) => {
                   ?.split("/")[1]
                   .concat("/")
                   .concat(pathname?.split("/")[2]);
-              const active = item.path === pathname || path === item.path;
+              const active = item.path === pathname;
 
               return (
                 <SideNavItem
@@ -92,10 +90,10 @@ export const SideNav = (props: any) => {
         <Box sx={{ p: "0 2rem" }}>
           <Divider sx={{ borderColor: "rgba(255,255,255,0.24)" }} />
           <Box display={"flex"} alignItems={"center"} my={"30px"} columnGap={2}>
-            <Avatar src="">A</Avatar>
+            {/* <Avatar src={auth.me?.images?.[0]} /> */}
             <Stack direction={"column"}>
               <Typography variant="body1" fontWeight={600} color="white">
-                Nome Oficina
+                {auth.me?.enterprise?.phantasyName ?? ""}
               </Typography>
               <Typography
                 variant="caption"
@@ -103,7 +101,7 @@ export const SideNav = (props: any) => {
                 fontWeight={600}
                 color="#848484"
               >
-                oficina@email.com
+                {auth.email ?? ""}
               </Typography>
             </Stack>
           </Box>

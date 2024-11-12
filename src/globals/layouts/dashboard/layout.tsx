@@ -66,9 +66,7 @@ export const DashboardLayout = (props: any) => {
   }, [pathname]);
 
   useEffect(() => {
-    const handleLogout = async () => {
-      return await logout();
-    };
+    const handleLogout = async () => await logout();
 
     if (logged === null || logged) return;
     if (logged === false) handleLogout();

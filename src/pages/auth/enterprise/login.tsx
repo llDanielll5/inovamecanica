@@ -62,9 +62,12 @@ const LoginPage = () => {
           email: values.email,
           password: values.password,
         });
+
         setCookie("jwt", data.token);
 
-        if (data.status === "SUCCESS") {
+        console.log({ data });
+
+        if (data.status === 201) {
           setAuth((prev) => ({
             ...prev,
             email: values.email,
@@ -75,9 +78,9 @@ const LoginPage = () => {
         }
       } catch (err: any) {
         setIsLoading(false);
-        setErrorMsg(err.response.data.error ?? err.error);
+        setErrorMsg(err.error ?? err.response.data.error);
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.response.data.error ?? err.error });
+        helpers.setErrors({ submit: err.error ?? err.response.data.error });
         helpers.setSubmitting(false);
       }
     },

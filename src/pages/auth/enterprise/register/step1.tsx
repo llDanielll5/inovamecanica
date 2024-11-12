@@ -26,7 +26,7 @@ import { TextCNPJCustom } from "@/globals/_components/customTextFields";
 import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
 import * as Yup from "yup";
 
-const enterpriseType = [
+export const enterpriseType = [
   { value: "CAR_WASH", text: "Lava Jato" },
   { value: "MECHANIC_SHOP", text: "Oficina Mecânica" },
 ];

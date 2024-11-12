@@ -62,3 +62,22 @@ export const TextCNPJCustom = forwardRef<HTMLInputElement, CustomProps>(
     );
   }
 );
+
+export const TextHourCustom = forwardRef<HTMLInputElement, CustomProps>(
+  function TextPhoneCustom(props, ref) {
+    const { onChange, ...other } = props;
+    return (
+      <IMask
+        {...other}
+        mask={"00:00"}
+        definitions={{
+          "#": /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) =>
+          onChange({ target: { name: props.name, value } })
+        }
+      />
+    );
+  }
+);

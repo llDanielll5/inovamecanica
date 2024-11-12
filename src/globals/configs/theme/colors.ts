@@ -1,3 +1,4 @@
+import { COLORS } from "@/globals/utils/colors";
 import { alpha } from "@mui/material/styles";
 
 const withAlphas = (color: any) => {
@@ -25,11 +26,11 @@ export const neutral = {
 };
 
 export const indigo = withAlphas({
-  lightest: "#F5F7FF",
-  light: "#EBEEFE",
-  main: "#6366F1",
-  dark: "#4338CA",
-  darkest: "#312E81",
+  lightest: COLORS.PRIMARY.LIGHTNESS,
+  light: COLORS.PRIMARY.LIGHT,
+  main: COLORS.PRIMARY.MAIN,
+  dark: COLORS.PRIMARY.DARK,
+  darkest: COLORS.PRIMARY.DARKNESS,
   contrastText: "#FFFFFF",
 });
 
@@ -68,8 +69,3 @@ export const error = withAlphas({
   darkest: "#7A271A",
   contrastText: "#FFFFFF",
 });
-
-export const COLORS = {
-  PRIMARY: "#3533CD",
-  SECONDARY: "",
-};

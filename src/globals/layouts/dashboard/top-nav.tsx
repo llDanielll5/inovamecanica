@@ -123,10 +123,8 @@ export const TopNav = (props: any) => {
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}
               sx={{ cursor: "pointer", height: 40, width: 40 }}
-              src={""}
-            >
-              A
-            </Avatar>
+              src={auth?.me?.images?.[0] ?? ""}
+            />
           </Stack>
         </Stack>
       </Box>

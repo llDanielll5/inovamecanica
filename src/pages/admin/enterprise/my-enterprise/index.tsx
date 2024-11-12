@@ -388,7 +388,6 @@ const MyEnterpriseAdminPage = () => {
       <CustomAccordion title="Fotos" content={enterprisePhotoData()} />
       {width! > 760 && (
         <CustomAccordion
-          className={"openingHours"}
           title="Horário de Funcionamento"
           content={
             <EnterpriseOpeningHoursData

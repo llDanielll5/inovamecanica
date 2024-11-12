@@ -1,8 +1,9 @@
 export const COLORS = {
   PRIMARY: {
+    MAIN: "#003366",
     DARKNESS: "#004283",
     DARK: "#0050A0",
-    MAIN: "#005FBD",
+    MEDIUM: "#005FBD",
     LIGHT: "#006DDB",
     LIGHTNESS: "#168AFF",
   },

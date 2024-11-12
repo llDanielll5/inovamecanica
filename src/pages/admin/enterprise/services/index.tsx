@@ -8,30 +8,29 @@ import {
   Pagination,
   Stack,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import AdminEnterpriseServicesTable from "@/globals/_components/tables/admin/enterprise/services-table";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { Authentication } from "@/globals/atoms/auth";
 import { PaginationProps } from "../../../../../types";
 import Loading from "@/globals/_components/loading";
 import CModal from "@/globals/_components/custom-modal";
-import { maskValue } from "@/globals/utils/utils";
+import { formatToBrl, maskValue } from "@/globals/utils/utils";
 import { DashboardLayout } from "@/globals/layouts/dashboard/layout";
-import AdminEnterpriseServicesTable from "@/globals/_components/tables/admin/enterprise/services-table";
 import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
 import { COLORS } from "@/globals/utils/colors";
+import { ServicesInterface } from "@/globals/types/enterprise";
+import { TextBRLCustom } from "@/globals/_components/custom-textfields";
 
-interface TreatmentValues {
-  name: string;
-  price: string;
-}
-
-const defaultValues: TreatmentValues = {
+const defaultValues: ServicesInterface = {
   name: "",
-  price: "",
+  description: "",
+  price: undefined,
 };
 
 type RegisterType = "Register" | "Edit";
@@ -39,9 +38,9 @@ type RegisterType = "Register" | "Edit";
 const ServicesAdminEnterprise = (props: any) => {
   const [treatmentID, setTreatmentID] = useState("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [treatmentValues, setTreatmentValues] = useState(defaultValues);
+  const [serviceValues, setServiceValues] = useState(defaultValues);
   const [registerType, setRegisterType] = useState<RegisterType>("Register");
-  const [treatments, setTreatments] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([]);
   const [readed, setReaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -58,7 +57,7 @@ const ServicesAdminEnterprise = (props: any) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   function handleChangeValue(field: string, value: string) {
-    return setTreatmentValues((prev) => ({ ...prev, [field]: value }));
+    return setServiceValues((prev) => ({ ...prev, [field]: value }));
   }
 
   const handleConclusion = () => {
@@ -67,7 +66,7 @@ const ServicesAdminEnterprise = (props: any) => {
   };
 
   function handleCloseModal() {
-    setTreatmentValues(defaultValues);
+    setServiceValues(defaultValues);
     setModalVisible(false);
     setTreatmentID("");
     return;
@@ -126,10 +125,9 @@ const ServicesAdminEnterprise = (props: any) => {
   }
 
   async function handleEditConclusion() {
-    let { price, name } = treatmentValues;
-    let priceNum = parseFloat(price.replace(".", "").replace(",", "."));
+    let { price, name } = serviceValues;
 
-    let data = { price: priceNum, name };
+    let data = { price, name };
 
     // return await handleEditTreatment(treatmentID, data).then(
     //   async () => {
@@ -206,7 +204,7 @@ const ServicesAdminEnterprise = (props: any) => {
           <Grid item xs={12} md={6}>
             <TextField
               label="Nome do Serviço"
-              value={treatmentValues.name}
+              value={serviceValues.name}
               sx={{ width: "100%" }}
               onChange={(e) => handleChangeValue("name", e.target.value)}
               onKeyDown={({ key }: any) => {
@@ -218,12 +216,10 @@ const ServicesAdminEnterprise = (props: any) => {
           <Grid item xs={12} md={6}>
             <TextField
               label="Valor do Serviço"
-              value={treatmentValues.price}
-              onChange={(e) =>
-                handleChangeValue("price", maskValue(e.target.value))
-              }
+              value={serviceValues.price?.toString()}
+              onChange={(e) => handleChangeValue("price", e.target.value)}
               sx={{ width: "100%" }}
-              inputProps={{ maxLength: 10 }}
+              InputProps={{ inputComponent: TextBRLCustom as any }}
               onKeyDown={({ key }: any) => {
                 if (key === "Enter") return handleConclusion();
               }}
@@ -233,10 +229,8 @@ const ServicesAdminEnterprise = (props: any) => {
           <Grid item xs={12} md={12}>
             <TextField
               label="Descrição do Serviço"
-              value={treatmentValues.price}
-              onChange={(e) =>
-                handleChangeValue("price", maskValue(e.target.value))
-              }
+              value={serviceValues.description}
+              onChange={(e) => handleChangeValue("description", e.target.value)}
               sx={{ width: "100%" }}
               multiline
               rows={5}
@@ -248,24 +242,32 @@ const ServicesAdminEnterprise = (props: any) => {
         </Grid>
 
         <Stack direction={"row"} justifyContent={"flex-end"} columnGap={2}>
-          <Button
-            sx={{ mt: 2, height: 42 }}
-            color="primary"
-            variant="outlined"
-            title="Adicionar novo tratamento"
-            onClick={() => handleConclusion()}
+          <Tooltip title="Cancelar">
+            <Button
+              sx={{ mt: 2, height: 42 }}
+              color="primary"
+              variant="outlined"
+              onClick={handleCloseModal}
+            >
+              Cancelar
+            </Button>
+          </Tooltip>
+          <Tooltip
+            title={
+              registerType === "Register"
+                ? "Adicionar novo Serviço"
+                : "Atualizar Serviço"
+            }
           >
-            Cancelar
-          </Button>
-          <Button
-            sx={{ mt: 2, height: 42 }}
-            color="primary"
-            variant="contained"
-            title="Adicionar novo tratamento"
-            onClick={() => handleConclusion()}
-          >
-            {registerType === "Register" ? "Criar" : "Editar"}
-          </Button>
+            <Button
+              sx={{ mt: 2, height: 42 }}
+              color="primary"
+              variant="contained"
+              onClick={handleConclusion}
+            >
+              {registerType === "Register" ? "Criar" : "Editar"}
+            </Button>
+          </Tooltip>
         </Stack>
       </CModal>
 

@@ -17,39 +17,17 @@ import useWindowSize from "@/globals/hooks/useWindowSize";
 import { useRouter } from "next/router";
 
 const footerMenuLinks = [
-  { href: "#", text: "Home" },
-  { href: "#", text: "Vantagens" },
-  { href: "#", text: "Como Funciona" },
-  { href: "#", text: "Duvidas Frequentes" },
-  { href: "#", text: "Contato" },
+  { href: "/", text: "Home" },
+  { href: "#advantages", text: "Vantagens" },
+  { href: "#how-work", text: "Como Funciona" },
+  { href: "#faq", text: "Duvidas Frequentes" },
+  { href: "#contact", text: "Contato" },
 ];
 const services = [
   { href: "#", text: "Mecânicas" },
   { href: "#", text: "Lava-Jatos" },
-  { href: "#", text: "Lanternagem   " },
+  { href: "#", text: "Lanternagem" },
 ];
-
-const PlatformsDistributionCard = (props: {
-  icon: React.ReactNode;
-  platformName: string;
-}) => {
-  return (
-    <PlatformCardContainer>
-      {props.icon}
-      <Stack direction="column">
-        <DoubleText
-          variant="h1"
-          color="white"
-          fontWeight={400}
-          fontSize={".7rem"}
-        >
-          Baixar na <br />
-          <span>{props.platformName}</span>
-        </DoubleText>
-      </Stack>
-    </PlatformCardContainer>
-  );
-};
 
 const FooterLandingPageEnterprise = () => {
   const router = useRouter();
@@ -63,16 +41,6 @@ const FooterLandingPageEnterprise = () => {
           </Typography>
 
           <PlatformsContainer>
-            {/* <PlatformsDistributionCard
-              icon={
-                <AppleStoreIcon sx={{ color: "white", fontSize: "20px" }} />
-              }
-              platformName="Apple Store"
-            /> */}
-            {/* <PlatformsDistributionCard
-              icon={<PlayStoreIcon sx={{ color: "white", fontSize: "20px" }} />}
-              platformName="Play Store"
-            /> */}
             <StyledPlatformDistribution
               src="/images/landing-page/enterprise/google-play.png"
               alt=""
@@ -113,7 +81,7 @@ const FooterLandingPageEnterprise = () => {
               Serviços
             </Typography>
 
-            {footerMenuLinks.map((item, index) => (
+            {services.map((item, index) => (
               <Typography
                 key={index}
                 variant="h6"

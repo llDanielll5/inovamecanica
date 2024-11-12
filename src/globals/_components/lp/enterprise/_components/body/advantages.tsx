@@ -12,7 +12,7 @@ import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 const AdvantagesEnterprise = () => {
   const { width } = useWindowSize();
   return (
-    <Container>
+    <Container id="advantages">
       <InnerContainer>
         <PicturesSide container spacing={width! > 760 ? 1 : 0.6}>
           <Grid item lg={4} md={6} xs={4} alignSelf={"flex-end"}>

@@ -30,3 +30,10 @@ export const priceToBrl = (price: number) => {
 export function generateIdempotencyKey() {
   return uuidv4();
 }
+
+export const formatToBrl = (value: number) => {
+  return value.toLocaleString("pt-br", {
+    style: "currency",
+    currency: "BRL",
+  });
+};

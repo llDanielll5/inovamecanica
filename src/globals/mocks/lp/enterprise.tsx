@@ -1,18 +1,18 @@
 export const navLinks = [
   {
-    href: "#",
+    href: "#advantages",
     text: "Vantagens",
   },
   {
-    href: "#",
+    href: "#how-work",
     text: "Como Funciona",
   },
   {
-    href: "#",
+    href: "#faq",
     text: "Dúvidas Frequentes",
   },
   {
-    href: "#",
+    href: "#contact",
     text: "Contato",
   },
   {

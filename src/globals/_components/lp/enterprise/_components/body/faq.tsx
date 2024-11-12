@@ -43,7 +43,7 @@ const detailsAccordionStyle = {
 const FAQEnterprise = () => {
   const { width } = useWindowSize();
   return (
-    <Container>
+    <Container id="faq">
       <FaqContainer>
         <LeftSide>
           <Typography variant={width! > 760 ? "h2" : "h3"} color="#171717">
@@ -101,7 +101,7 @@ const FAQEnterprise = () => {
         )}
       </FaqContainer>
 
-      <ContactContainer>
+      <ContactContainer id="contact">
         <BottomImage src="/images/landing-page/enterprise/mechanic.png" />
         <FormContainer>
           <Typography variant={width! > 760 ? "h2" : "h3"} color="white" pb={4}>
@@ -109,16 +109,22 @@ const FAQEnterprise = () => {
           </Typography>
           <Grid container spacing={2} rowGap={"1rem"}>
             <Grid item lg={12} xs={12}>
-              <TextField label="Nome" fullWidth />
+              <StyledTextField variant="outlined" label="Nome" fullWidth />
             </Grid>
             <Grid item lg={6} xs={6}>
-              <TextField label="Telefone" fullWidth />
+              <StyledTextField variant="outlined" label="Telefone" fullWidth />
             </Grid>
             <Grid item lg={6} xs={6}>
-              <TextField label="Email" fullWidth />
+              <StyledTextField variant="outlined" label="Email" fullWidth />
             </Grid>
             <Grid item lg={12} xs={12}>
-              <TextField label="Mensagem" fullWidth multiline rows={5} />
+              <StyledTextField
+                variant="outlined"
+                label="Mensagem"
+                fullWidth
+                multiline
+                rows={5}
+              />
             </Grid>
 
             <Grid item lg={6}>
@@ -217,6 +223,27 @@ const FormContainer = styled(Box)`
     transform: translateX(0);
     padding: 44px 22px;
     bottom: 0;
+  }
+`;
+
+const StyledTextField = styled(TextField)`
+  & label.Mui-focused {
+    color: white;
+  }
+
+  .MuiOutlinedInput-root {
+    // - The Input-root, inside the TextField-root
+    & fieldset {
+      // - The <fieldset> inside the Input-root
+      border-color: white; // - Set the Input border: ;
+    }
+    &:hover fieldset {
+      border-color: white; // - Set the Input border when parent has :hover
+    }
+    &.Mui-focused fieldset {
+      // - Set the Input border when parent is focused
+      border-color: white;
+    }
   }
 `;
 

@@ -90,7 +90,7 @@ export const SideNav = (props: any) => {
         <Box sx={{ p: "0 2rem" }}>
           <Divider sx={{ borderColor: "rgba(255,255,255,0.24)" }} />
           <Box display={"flex"} alignItems={"center"} my={"30px"} columnGap={2}>
-            {/* <Avatar src={auth.me?.images?.[0]} /> */}
+            <Avatar src={auth.me?.images?.[0]} />
             <Stack direction={"column"}>
               <Typography variant="body1" fontWeight={600} color="white">
                 {auth.me?.enterprise?.phantasyName ?? ""}

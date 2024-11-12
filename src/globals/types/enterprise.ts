@@ -34,3 +34,9 @@ export interface EnterpriseInterface {
   phone: string;
   images: string[];
 }
+
+export interface ServicesInterface {
+  name: string;
+  price?: number;
+  description: string;
+}

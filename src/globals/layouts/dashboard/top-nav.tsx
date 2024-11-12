@@ -18,7 +18,9 @@ import { Authentication } from "@/globals/atoms/auth";
 import { usePathname } from "next/navigation";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { useEffect } from "react";
+import ListIcon from "@mui/icons-material/List";
+import { COLORS } from "@/globals/utils/colors";
+import styled from "@emotion/styled";
 
 const SIDE_NAV_WIDTH = 289;
 const TOP_NAV_HEIGHT = 64;
@@ -46,6 +48,8 @@ export const TopNav = (props: any) => {
         return `Assinaturas`;
       case "/admin/enterprise/settings":
         return `Configurações`;
+      default:
+        return `Dashboard`;
     }
   };
 
@@ -58,9 +62,7 @@ export const TopNav = (props: any) => {
           backgroundColor: (theme: any) =>
             alpha(theme.palette.background.default, 0.8),
           position: "sticky",
-          left: {
-            lg: `${SIDE_NAV_WIDTH}px`,
-          },
+          left: { lg: `${SIDE_NAV_WIDTH}px` },
           top: 0,
           "-webkit-box-shadow": "0px 4px 15px 0px rgba(0,0,0,0.1)",
           "-moz-box-shadow": "0px 4px 15px 0px rgba(0,0,0,0.1)",
@@ -104,7 +106,15 @@ export const TopNav = (props: any) => {
 
           <Stack alignItems="center" direction="row" spacing={2}>
             <Tooltip title="Notifications">
-              <IconButton sx={{ backgroundColor: "#003366" }}>
+              <IconButton
+                sx={{
+                  backgroundColor: "#003366",
+                  ":hover": {
+                    backgroundColor: COLORS.PRIMARY.DARK,
+                    opacity: 1,
+                  },
+                }}
+              >
                 <Badge
                   badgeContent={0}
                   color="error"
@@ -119,12 +129,14 @@ export const TopNav = (props: any) => {
                 </Badge>
               </IconButton>
             </Tooltip>
-            <Avatar
-              onClick={accountPopover.handleOpen}
-              ref={accountPopover.anchorRef}
-              sx={{ cursor: "pointer", height: 40, width: 40 }}
-              src={auth?.me?.images?.[0] ?? ""}
-            />
+            <Tooltip title="Opções de Conta">
+              <MenuButton
+                onClick={accountPopover.handleOpen}
+                ref={accountPopover.anchorRef}
+              >
+                <ListIcon sx={{ color: "white" }} />
+              </MenuButton>
+            </Tooltip>
           </Stack>
         </Stack>
       </Box>
@@ -137,6 +149,17 @@ export const TopNav = (props: any) => {
     </>
   );
 };
+
+const MenuButton = styled(IconButton)`
+  cursor: pointer;
+  height: 40;
+  width: 40;
+  background-color: ${COLORS.PRIMARY.MAIN};
+
+  :hover {
+    background-color: ${COLORS.PRIMARY.DARK};
+  }
+`;
 
 TopNav.propTypes = {
   onNavOpen: PropTypes.func,

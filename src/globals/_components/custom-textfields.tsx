@@ -81,3 +81,22 @@ export const TextHourCustom = forwardRef<HTMLInputElement, CustomProps>(
     );
   }
 );
+
+export const TextBRLCustom = forwardRef<HTMLInputElement, CustomProps>(
+  function TextBRLCustom(props, ref) {
+    const { onChange, ...other } = props;
+    return (
+      <IMask
+        {...other}
+        mask={"R$ 000.000.000,00"}
+        definitions={{
+          "#": /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) =>
+          onChange({ target: { name: props.name, value } })
+        }
+      />
+    );
+  }
+);

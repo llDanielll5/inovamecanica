@@ -42,7 +42,7 @@ const HowWorkEnterprise = () => {
   const { width } = useWindowSize();
 
   return (
-    <Container>
+    <Container id="how-work">
       <Typography variant="h2" color="white" textAlign={"center"}>
         Como Funciona?
       </Typography>

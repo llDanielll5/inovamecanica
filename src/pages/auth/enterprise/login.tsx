@@ -86,6 +86,12 @@ const LoginPage = () => {
     },
   });
 
+  useEffect(() => {
+    if (!auth.isAuth) return;
+
+    router.push("/admin/enterprise");
+  }, [auth]);
+
   return (
     <>
       <Snackbar

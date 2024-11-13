@@ -86,11 +86,13 @@ const LoginPage = () => {
     },
   });
 
+  console.log({ auth });
+
   useEffect(() => {
     if (!auth.isAuth) return;
 
     router.push("/admin/enterprise");
-  }, [auth]);
+  }, [auth.isAuth]);
 
   return (
     <>

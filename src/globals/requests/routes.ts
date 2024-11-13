@@ -11,9 +11,16 @@ export const ROUTES = {
     GET_UNIQUE: (id: string) => `/${API_VERSION}/enterprises/${id}`,
     UPDATE: (id: string) => `/${API_VERSION}/enterprises/${id}`,
     DELETE: (id: string) => `/${API_VERSION}/enterprises/${id}`,
+    GET_SERVICES: (id: string, page: string, pageSize: string) =>
+      `/${API_VERSION}/enterprises/services?id=${id}&page=${page}&pageSize=${pageSize}`,
   },
   CLIENT: {
     LOGIN: "",
     REGISTER: "",
+  },
+  SERVICES: {
+    ADD_SERVICE: `/${API_VERSION}/services`,
+    GET_SERVICE_BY_ENTERPRISE: ``,
+    GET_UNIQUE: (id: string) => `/${API_VERSION}/services/${id}`,
   },
 };

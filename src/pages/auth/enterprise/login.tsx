@@ -86,8 +86,6 @@ const LoginPage = () => {
     },
   });
 
-  console.log({ auth });
-
   useEffect(() => {
     if (!auth.isAuth) return;
 

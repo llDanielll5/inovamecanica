@@ -20,9 +20,10 @@ interface TableProps {
 }
 
 export interface TableDataProps {
-  cod: string;
+  id: number;
   name: string;
-  price: string;
+  price: number;
+  description: string;
 }
 
 export default function AdminEnterpriseServicesTable(props: TableProps) {
@@ -37,37 +38,48 @@ export default function AdminEnterpriseServicesTable(props: TableProps) {
           <TableRow>
             {titles.map((item, index) => {
               return (
-                <S.StyledTable key={index} sx={{ width: "10%" }}>
-                  {item}
+                <S.StyledTable key={index}>
+                  <Typography
+                    fontFamily={"Open Sans"}
+                    fontWeight={600}
+                    color="#8B8B8B"
+                  >
+                    {item}
+                  </Typography>
                 </S.StyledTable>
               );
             })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.map((row: any, index) => {
-            let attr = row?.attributes;
-            let id = row?.id;
+          {data?.map((row, index) => {
+            let id = row.id.toString();
 
             return (
               <TableRow key={index}>
-                <TableCell component="th" scope="row" align={"left"}>
-                  {id}
-                </TableCell>
-                <TableCell>{attr.name}</TableCell>
                 <TableCell>
-                  {attr?.price.toLocaleString("pt-br", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
+                  <Typography fontFamily={"Open Sans"} fontWeight={600}>
+                    {row.name}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontFamily={"Open Sans"} fontWeight={600}>
+                    {row.description}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography fontFamily={"Open Sans"} fontWeight={600}>
+                    {row?.price.toLocaleString("pt-br", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </Typography>
                 </TableCell>
 
-                <TableCell>
+                <TableCell align="right">
                   <IconButton onClick={() => onEdit(id)}>
                     <EditIcon />
                   </IconButton>
-                </TableCell>
-                <TableCell>
                   <IconButton onClick={() => onDelete(id)}>
                     <DeleteIcon />
                   </IconButton>

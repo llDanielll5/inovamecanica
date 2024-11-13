@@ -1,6 +1,6 @@
 export interface PaginationProps {
   page: number;
-  pageCount: number;
+  totalPages: number;
   pageSize: number;
-  total: number;
+  totalItems: number;
 }

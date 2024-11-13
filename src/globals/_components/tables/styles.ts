@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Box } from "@mui/material";
+import { Box, Card } from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 
@@ -28,10 +28,10 @@ export const IconContainer = styled(Box)`
   justify-content: center;
 `;
 
-export const StyledTableContainer = styled(TableContainer)`
+export const StyledTableContainer = styled(Card)`
   background: #ffffff;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06);
-  border-radius: 8px;
-  border: 1.5px solid #bbb;
+  /* box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.06); */
+  border-radius: 15px;
+  border: 1.5px solid white;
   margin-top: 16px;
 `;

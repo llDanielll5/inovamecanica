@@ -26,6 +26,8 @@ import { StyledButton } from "@/globals/_components/lp/enterprise/_components/he
 import { COLORS } from "@/globals/utils/colors";
 import { ServicesInterface } from "@/globals/types/enterprise";
 import { TextBRLCustom } from "@/globals/_components/custom-textfields";
+import axiosInstance from "@/globals/requests/axios";
+import { ROUTES } from "@/globals/requests/routes";
 
 const defaultValues: ServicesInterface = {
   name: "",
@@ -36,7 +38,7 @@ const defaultValues: ServicesInterface = {
 type RegisterType = "Register" | "Edit";
 
 const ServicesAdminEnterprise = (props: any) => {
-  const [treatmentID, setTreatmentID] = useState("");
+  const [serviceId, setServiceId] = useState("");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [serviceValues, setServiceValues] = useState(defaultValues);
   const [registerType, setRegisterType] = useState<RegisterType>("Register");
@@ -45,18 +47,21 @@ const ServicesAdminEnterprise = (props: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const auth = useRecoilValue(Authentication);
+  const enterpriseId = auth?.me?.id;
 
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<5 | 10 | 20 | 50 | 100>(5);
   const [dbPagination, setDbPagination] = useState<PaginationProps>({
     page: 0,
-    pageCount: 0,
+    totalPages: 0,
     pageSize: 0,
-    total: 0,
+    totalItems: 0,
   });
 
   const [searchTerm, setSearchTerm] = useState("");
-
-  function handleChangeValue(field: string, value: string) {
+  const handleFilterChange = (value: string) => setSearchTerm(value);
+  const handleChangePage = (e: any, pageIndex: number) => setPage(pageIndex);
+  function handleChangeValue(field: string, value: any) {
     return setServiceValues((prev) => ({ ...prev, [field]: value }));
   }
 
@@ -68,90 +73,84 @@ const ServicesAdminEnterprise = (props: any) => {
   function handleCloseModal() {
     setServiceValues(defaultValues);
     setModalVisible(false);
-    setTreatmentID("");
+    setServiceId("");
     return;
   }
 
   const handleSubmit = async () => {
-    // let { price, name } = treatmentValues;
-    // if (!price || !name)
-    //   return alert("Por favor verificar os campos para o cadastro");
-    // let priceNum = parseFloat(price.replace(".", "").replace(",", "."));
-    // let data = { price: priceNum, name };
-    // return await handleCreateTreatment(data).then(
-    //   async (res: any) => {
-    //     setModalVisible(false);
-    //     setTreatmentValues(defaultValues);
-    //     return await getTreatments(page);
-    //   },
-    //   (error) => console.log(error.response)
-    // );
+    let { price, name, description } = serviceValues;
+    if (!price || !name)
+      return alert("Por favor verificar os campos para o cadastro");
+    let data = { price, name, description, enterpriseId };
+
+    try {
+      await axiosInstance.post(ROUTES.SERVICES.ADD_SERVICE, data);
+      setModalVisible(false);
+      setServiceValues(defaultValues);
+      await getServices();
+    } catch (error: any) {
+      console.log(error.response);
+    }
   };
 
-  const getTreatments = useCallback(async (currPage?: number) => {
-    // try {
-    //   let res = await handleGetTreatments(currPage);
-    //   if (res) {
-    //     setReaded(true);
-    //     setDbPagination(res.data.meta.pagination);
-    //     setPage(res.data.meta.pagination.page);
-    //     setTreatments(res.data.data);
-    //     return;
-    //   }
-    // } catch (error: any) {
-    //   if (error.response) console.log(error.response);
-    // }
-  }, []);
-
-  const handleChangePage = (e: any, value: number) => {
-    setPage(value);
-    getTreatments(value);
-  };
+  const getServices = useCallback(
+    async (currPage?: number) => {
+      try {
+        let { data, status } = await axiosInstance.get(
+          ROUTES.ENTERPRISE.GET_SERVICES(
+            enterpriseId,
+            currPage?.toString() ?? page.toString(),
+            pageSize.toString()
+          )
+        );
+        if (status === 201) {
+          setReaded(true);
+          setDbPagination(data.pagination);
+          setServices(data.services);
+          return;
+        }
+      } catch (error: any) {
+        if (error.response) console.log(error.response);
+      }
+    },
+    [page]
+  );
 
   async function handleEditModal(e: string) {
     setRegisterType("Edit");
     setModalVisible(true);
-    setTreatmentID(e);
+    setServiceId(e);
 
-    // return await handleGetOneTreatment(e).then(
-    //   (res) => {
-    //     let attr = res.data.data.attributes;
-    //     let { name, price } = attr;
-    //     let priceStr = maskValue(price.toFixed(2));
-    //     return setTreatmentValues({ name, price: priceStr });
-    //   },
-    //   (error) => console.log(error.response)
-    // );
+    try {
+      const { data } = await axiosInstance.get(ROUTES.SERVICES.GET_UNIQUE(e));
+      let { name, description, price } = data;
+      setServiceValues({ name, price, description });
+    } catch (error: any) {
+      console.log(error.response);
+    }
   }
 
   async function handleEditConclusion() {
-    let { price, name } = serviceValues;
+    let { price, name, description } = serviceValues;
+    let data = { price: price!, name, description };
 
-    let data = { price, name };
-
-    // return await handleEditTreatment(treatmentID, data).then(
-    //   async () => {
-    //     setModalVisible(false);
-    //     setTreatmentID("");
-    //     await getTreatments(page);
-    //   },
-    //   (error) => console.log(error.response)
-    // );
+    try {
+      await axiosInstance.put(ROUTES.SERVICES.GET_UNIQUE(serviceId), data);
+      setModalVisible(false);
+      setServiceId("");
+      await getServices(page);
+    } catch (error: any) {
+      console.log(error.response);
+    }
   }
 
   const handleDeleteDoc = async (e: string) => {
-    // return await handleDeleteTreatment(e).then(
-    //   async (res) => await getTreatments(page),
-    //   (error) => console.log(error.response)
-    // );
-  };
-
-  useEffect(() => {
-    if (!readed) getTreatments(0);
-  }, [getTreatments, readed]);
-
-  const handleFilterChange = (value: string) => {
-    setSearchTerm(value);
+    try {
+      await axiosInstance.delete(ROUTES.SERVICES.GET_UNIQUE(e));
+      await getServices();
+    } catch (error: any) {
+      console.log(error.response);
+    }
   };
 
   const handleSearchButtonClick = async () => {
@@ -168,7 +167,11 @@ const ServicesAdminEnterprise = (props: any) => {
   };
 
   useEffect(() => {
-    if (searchTerm === "") getTreatments(0);
+    if (!readed) getServices();
+  }, [getServices, readed]);
+
+  useEffect(() => {
+    if (searchTerm === "") getServices();
   }, [searchTerm]);
 
   if (isLoading)
@@ -198,7 +201,7 @@ const ServicesAdminEnterprise = (props: any) => {
           variant="h4"
           color={COLORS.PRIMARY.MAIN}
         >
-          Criar serviço
+          {registerType === "Register" ? "Criar serviço" : "Editar Serviço"}
         </Typography>
         <Grid container spacing={2} mt={0.5}>
           <Grid item xs={12} md={6}>
@@ -217,7 +220,17 @@ const ServicesAdminEnterprise = (props: any) => {
             <TextField
               label="Valor do Serviço"
               value={serviceValues.price?.toString()}
-              onChange={(e) => handleChangeValue("price", e.target.value)}
+              onChange={(e) =>
+                handleChangeValue(
+                  "price",
+                  parseFloat(
+                    e.target.value
+                      .replaceAll("R$ ", "")
+                      .replaceAll(".", "")
+                      .replaceAll(",", ".")
+                  )
+                )
+              }
               sx={{ width: "100%" }}
               InputProps={{ inputComponent: TextBRLCustom as any }}
               onKeyDown={({ key }: any) => {
@@ -298,16 +311,16 @@ const ServicesAdminEnterprise = (props: any) => {
 
       <Box mx={1} px={2} width={"100%"} mb={2}>
         <AdminEnterpriseServicesTable
-          data={[]}
+          data={services}
           onEdit={handleEditModal}
           onDelete={handleDeleteDoc}
-          messageNothing="Não encontramos tratamentos cadastrados."
-          titles={
-            ["Teste"]
-            // userData?.userType === "ADMIN"
-            //   ? ["Código", "Tratamento", "Preço", "Editar", "Excluir"]
-            //   : ["Código", "Tratamento", "Preço"]
-          }
+          messageNothing="Não encontramos serviços cadastrados."
+          titles={[
+            "Nome do Serviço",
+            "Descrição do Serviço",
+            "A partir R$",
+            "Ações",
+          ]}
         />
       </Box>
 
@@ -317,7 +330,7 @@ const ServicesAdminEnterprise = (props: any) => {
             page={page}
             size="small"
             onChange={handleChangePage}
-            count={dbPagination.pageCount}
+            count={dbPagination.totalItems}
           />
         )}
       </Box>

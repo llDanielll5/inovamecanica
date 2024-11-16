@@ -2,36 +2,43 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Box,
+  Button,
   Grid,
-  LinearProgress,
-  linearProgressClasses,
   MenuItem,
   Snackbar,
   styled,
   TextField,
   Typography,
 } from "@mui/material";
-import { AuthLayout } from "@/globals/layouts/auth";
-import { useFormik } from "formik";
-import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
-import LoadingComponent from "@/globals/_components/loading-component";
-import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
-import { COLORS } from "@/globals/utils/colors";
-import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import {
   TextCepCustom,
   TextPhoneCustom,
 } from "@/globals/_components/custom-textfields";
-import * as Yup from "yup";
-import axios from "axios";
+import { AuthLayout } from "@/globals/layouts/auth";
+import { useFormik } from "formik";
+import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
+import { COLORS } from "@/globals/utils/colors";
+import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import { ufValues } from "@/globals/mocks/auth/enterprise";
 import { getViaCepInfo } from "@/globals/requests";
 import { BorderLinearProgress } from "./step1";
 import { RegisterEnterprise } from "@/globals/atoms/auth/register-enterprise";
+import { useGeolocation } from "@/globals/hooks/useGeolocation";
+import LoadingComponent from "@/globals/_components/loading-component";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
+import * as Yup from "yup";
 
 const RegisterPage = () => {
   const router = useRouter();
+  const {
+    location,
+    geolocationErrorCode,
+    geolocationErrorMsg,
+    geoLoading,
+    retry,
+  } = useGeolocation();
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -60,6 +67,13 @@ const RegisterPage = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
+        if (geolocationErrorCode === 1 || !location) {
+          return alert(
+            "Só é possível continuar com o cadastro aceitando compartilhar a localização! Pois assim conseguimos mostrar seu cadastro aos usuários próximos"
+          );
+        }
+
+        helpers.setSubmitting(true);
         const replacedPhone = values.phone
           .replaceAll(")", "")
           .replaceAll("(", "")
@@ -82,6 +96,7 @@ const RegisterPage = () => {
         }));
       } catch (err: any) {
         setIsLoading(false);
+        helpers.setSubmitting(false);
         setErrorMsg(err.response.data.error ?? err.error);
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.response.data.error ?? err.error });
@@ -113,11 +128,14 @@ const RegisterPage = () => {
 
       if (stage === 2) {
         router.push("/auth/enterprise/register/step2");
+        formik.setSubmitting(false);
       } else if (stage === 3) {
         router.push("/auth/enterprise/register/step3");
+        formik.setSubmitting(false);
       } else if (stage === 4) {
         router.push("/auth/enterprise/register/finish");
-      } else return;
+        formik.setSubmitting(false);
+      } else return formik.setSubmitting(false);
     }
   }, [registerEnterpriseData?.stage, registerEnterpriseData]);
 
@@ -163,6 +181,16 @@ const RegisterPage = () => {
 
         <StyledForm noValidate onSubmit={formik.handleSubmit}>
           {isLoading && <LoadingComponent message={loadingMsg} />}
+
+          {geolocationErrorCode === 1 || !location ? (
+            <Button
+              onClick={retry}
+              variant="contained"
+              endIcon={<MyLocationIcon />}
+            >
+              Requisitar Localização novamente
+            </Button>
+          ) : null}
 
           <Grid container sx={{ flex: "1 1 auto", py: 2 }} spacing={2}>
             <Grid item xs={12} md={12}>

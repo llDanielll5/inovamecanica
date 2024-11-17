@@ -2,12 +2,12 @@ export const createTypography = () => {
   return {
     fontFamily: "Open Sans, sans-serif",
     body1: {
-      fontSize: "1rem",
+      fontSize: "clamp(1rem, 1vw, 3rem);",
       fontWeight: 500,
       lineHeight: 1.5,
     },
     body2: {
-      fontSize: "0.875rem",
+      fontSize: "clamp(0.875rem, 1vw, 2.6rem);",
       fontWeight: 200,
       lineHeight: 1.57,
     },
@@ -19,12 +19,12 @@ export const createTypography = () => {
       letterSpacing: "1px",
     },
     caption: {
-      fontSize: "0.75rem",
+      fontSize: "clamp(0.65rem, 1vw, 2.3rem);",
       fontWeight: 500,
       lineHeight: 1.66,
     },
     subtitle1: {
-      fontSize: "1rem",
+      fontSize: "clamp(0.9rem, 1vw, 2.6rem);",
       fontWeight: 500,
       lineHeight: 1.57,
     },
@@ -43,7 +43,7 @@ export const createTypography = () => {
     h1: {
       fontFamily: "Yantramanav, sans-serif",
       fontWeight: 900,
-      fontSize: "3.5rem",
+      fontSize: "clamp(3rem, 1vw, 6rem);",
       lineHeight: 1.2,
     },
     h2: {

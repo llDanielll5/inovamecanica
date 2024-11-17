@@ -1,8 +1,12 @@
 import React from "react";
 import { Box, Card, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { DashboardLayout } from "@/globals/layouts/dashboard/layout";
-import styled from "@emotion/styled";
 import { COLORS } from "@/globals/utils/colors";
+import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
+import styled from "@emotion/styled";
+import CheckIcon from "@mui/icons-material/Check";
+import { StyledButton } from "@/globals/_components/lp/enterprise/_components/header/banner";
+import { formatToBrl } from "@/globals/utils/utils";
 
 interface StyledTabsProps {
   children?: React.ReactNode;
@@ -30,11 +34,31 @@ function CustomTabPanel(props: TabPanelProps) {
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
+      style={{ overflowX: "scroll", width: "100%" }}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && (
+        <Box sx={{ py: 3, display: "flex", alignItems: "center" }}>
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
+
+const BenefitOfPlan = (props: { text: string; textColor?: string }) => {
+  return (
+    <Stack direction={"row"} alignItems={"center"} columnGap={"10px"}>
+      <CheckIcon sx={{ color: COLORS.GOLD.MAIN }} fontSize="medium" />
+      <Typography
+        variant="body1"
+        fontSize={"clamp(15px, 1vw, 22px)"}
+        color={props.textColor}
+      >
+        {props.text}
+      </Typography>
+    </Stack>
+  );
+};
 
 const BasicPlanCard = () => {
   return (
@@ -47,12 +71,7 @@ const BasicPlanCard = () => {
       >
         Básico
       </Typography>
-      <Typography
-        fontFamily={"Yantramanav"}
-        fontWeight={800}
-        fontSize={50}
-        textAlign={"center"}
-      >
+      <Typography variant="h1" textAlign={"center"}>
         Grátis
       </Typography>
       <Typography
@@ -64,12 +83,84 @@ const BasicPlanCard = () => {
       >
         Cadastro gratuito e visibilidade básica para atrair novos clientes.
       </Typography>
+
+      <Box
+        alignSelf={"flex-start"}
+        my={3}
+        display={"flex"}
+        flexDirection={"column"}
+        rowGap={1}
+      >
+        {[
+          "Acesso a plataforma",
+          "Visualização Padrão",
+          "Dados gerais da Empresa",
+          "Listar Serviços",
+        ].map((item, index) => (
+          <BenefitOfPlan text={item} key={index} />
+        ))}
+      </Box>
+
+      <StyledButton
+        disabled
+        variant="contained"
+        sx={{ borderRadius: 2, textTransform: "capitalize" }}
+        fullWidth
+      >
+        Plano selecionado
+      </StyledButton>
     </BasicPlanContainer>
   );
 };
 
-const PremiumPlanCard = () => {
-  return <PremiumPlanContainer elevation={10}></PremiumPlanContainer>;
+const PremiumPlanCard = (props: { value: number; advantages: string[] }) => {
+  return (
+    <PremiumPlanContainer elevation={10}>
+      <Typography
+        fontFamily={"Open Sans"}
+        fontWeight={500}
+        fontSize={26}
+        textAlign={"center"}
+        color="white"
+      >
+        Premium
+      </Typography>
+      <Typography variant="h1" textAlign={"center"} color="white">
+        {formatToBrl(props.value)}
+      </Typography>
+      <Typography
+        fontFamily={"Open Sans"}
+        fontWeight={500}
+        fontSize={16}
+        color="#D2D2D2"
+        textAlign={"center"}
+      >
+        Cadastro gratuito e visibilidade básica para atrair novos clientes.
+      </Typography>
+
+      <Box
+        alignSelf={"flex-start"}
+        my={3}
+        display={"flex"}
+        flexDirection={"column"}
+        rowGap={1}
+      >
+        {props.advantages.map((item, index) => (
+          <BenefitOfPlan text={item} key={index} textColor="white" />
+        ))}
+      </Box>
+
+      <StyledButton
+        variant="contained"
+        sx={{ borderRadius: 2, textTransform: "capitalize" }}
+        colors={COLORS.DEGRADE.GOLD}
+        fullWidth
+        onClick={() => alert("Em desenvolvimento")}
+      >
+        Selecionar Plano
+      </StyledButton>
+    </PremiumPlanContainer>
+  );
 };
 
 const SignsAdminEnterprise = () => {
@@ -80,15 +171,7 @@ const SignsAdminEnterprise = () => {
 
   return (
     <Container>
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        bgcolor={"white"}
-        borderRadius={12}
-        maxHeight={68}
-        minHeight={68}
-        padding={"6px 9px"}
-      >
+      <TabContainer elevation={10}>
         <StyledTabs
           value={tabValue}
           onChange={handleChange}
@@ -98,20 +181,23 @@ const SignsAdminEnterprise = () => {
           <StyledTab label="Semestral" />
           <StyledTab label="Anual" />
         </StyledTabs>
-      </Stack>
+      </TabContainer>
 
-      <CustomTabPanel value={tabValue} index={0}>
+      {tabValue === 0 && (
         <PlansContainer>
           <BasicPlanCard />
-          <PremiumPlanCard />
+          <PremiumPlanCard
+            advantages={[
+              "Acesso a plataforma",
+              "Visualização Padrão",
+              "Dados gerais da Empresa",
+              "Listar Serviços",
+              "Receber agendamento",
+            ]}
+            value={49.9}
+          />
         </PlansContainer>
-      </CustomTabPanel>
-      <CustomTabPanel value={tabValue} index={1}>
-        Item Two
-      </CustomTabPanel>
-      <CustomTabPanel value={tabValue} index={2}>
-        Item Three
-      </CustomTabPanel>
+      )}
     </Container>
   );
 };
@@ -121,38 +207,39 @@ const Container = styled(Box)`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
   height: 100%;
   flex-direction: column;
+  padding: 3rem 5%;
+  row-gap: 2rem;
 `;
 
-const StyledTab = styled((props: StyledTabProps) => (
-  <Tab disableRipple {...props} />
-))(({ theme }) => ({
-  textTransform: "none",
-  fontWeight: 600,
-  fontSize: 18,
-  fontFamily: "Open Sans",
-  color: "#000",
-  borderRadius: 40,
-  minHeight: 58,
-  maxHeight: 58,
-  padding: "14px 40px",
-  "&.Mui-selected": {
-    color: "#FFF",
-    backgroundColor: COLORS.PRIMARY.MAIN,
-  },
-  "&.Mui-focusVisible": {
-    backgroundColor: "rgba(100, 95, 228, 0.32)",
-  },
-}));
+const TabContainer = styled(Card)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 40px;
+  min-height: 68px;
+  max-height: 68px;
+  padding: 6px 9px;
+  width: max-content;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    min-height: 40px;
+    max-height: 40px;
+    max-width: 90%;
+  }
+`;
 
 const StyledTabs = styled((props: StyledTabsProps) => (
   <Tabs
     {...props}
-    TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
+    variant="fullWidth"
+    // TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
   />
 ))({
+  alignItems: "center",
   "& .MuiTabs-indicator": {
     display: "flex",
     justifyContent: "center",
@@ -164,12 +251,42 @@ const StyledTabs = styled((props: StyledTabsProps) => (
   },
 });
 
+const StyledTab = styled((props: StyledTabProps) => (
+  <Tab disableRipple {...props} />
+))`
+  text-transform: none;
+  font-weight: 600;
+  font-size: clamp(0.75rem, 1vw, 2.2rem);
+  font-family: Open Sans;
+  color: #000;
+  border-radius: 40px;
+  min-height: 58px;
+  max-height: 58px;
+  padding: 14px 40px;
+  width: 100%;
+  &.Mui-selected {
+    color: #fff;
+    background-color: ${COLORS.PRIMARY.MAIN};
+  }
+  &.Mui-focusVisible {
+    background-color: rgba(100, 95, 228, 0.32);
+  }
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    min-height: 30px;
+    max-height: 30px;
+  }
+`;
+
 const PlansContainer = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  column-gap: 30px;
+  column-gap: 1.5rem;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    flex-direction: column;
+    row-gap: 1rem;
+  }
 `;
 
 const BasicPlanContainer = styled(Card)`
@@ -183,6 +300,11 @@ const BasicPlanContainer = styled(Card)`
   flex-direction: column;
   align-items: center;
   row-gap: 12px;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    max-width: 90%;
+    min-width: 90%;
+  }
 `;
 
 const PremiumPlanContainer = styled(Card)`
@@ -196,6 +318,11 @@ const PremiumPlanContainer = styled(Card)`
   flex-direction: column;
   align-items: center;
   row-gap: 12px;
+
+  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
+    max-width: 100%;
+    min-width: 100%;
+  }
 `;
 
 SignsAdminEnterprise.getLayout = (page: React.JSX.Element) => (

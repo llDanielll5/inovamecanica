@@ -14,6 +14,9 @@ export const COLORS = {
     LIGHT: "#EAA04C",
     LIGHTNESS: "#ECAA5E",
   },
+  GOLD: {
+    MAIN: "#CC7818",
+  },
   BLACK: {
     DARKNESS: "#151515",
     DARK: "#272727",
@@ -27,5 +30,10 @@ export const COLORS = {
     MAIN: "#C4C4C4",
     LIGHT: "#B3B3B3",
     LIGHTNESS: "#A1A1A1",
+  },
+  DEGRADE: {
+    GOLD: ["#CC7818", "#ECAA5E"],
+    BLUE: ["#003366", "#006DDB"],
+    DARK_BLUE: ["#003366", "00336600"],
   },
 };

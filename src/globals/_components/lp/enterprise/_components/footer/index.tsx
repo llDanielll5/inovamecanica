@@ -99,7 +99,7 @@ const FooterLandingPageEnterprise = () => {
           </Stack>
         </Grid>
 
-        <Grid
+        {/* <Grid
           item
           lg={3}
           xs={12}
@@ -153,7 +153,7 @@ const FooterLandingPageEnterprise = () => {
               }}
             />
           </Stack>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Divider sx={{ mt: "4.6rem", mb: "1.2rem" }} />
@@ -171,7 +171,7 @@ const FooterLandingPageEnterprise = () => {
         <FooterTerms>
           <Typography
             component={"a"}
-            href="#"
+            href="/terms/terms-of-use"
             variant="h6"
             fontWeight={400}
             color="white"
@@ -181,7 +181,7 @@ const FooterLandingPageEnterprise = () => {
           </Typography>
           <Typography
             component={"a"}
-            href="#"
+            href="/terms/privacy-policy"
             variant="h6"
             fontWeight={400}
             color="white"

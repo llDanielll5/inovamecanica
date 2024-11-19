@@ -190,6 +190,7 @@ const BottomImage = styled("img")`
   bottom: -4px;
   right: 0;
   width: 80%;
+  max-height: 850px;
 
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
     display: none;

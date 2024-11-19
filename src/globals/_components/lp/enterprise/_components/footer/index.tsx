@@ -41,16 +41,19 @@ const FooterLandingPageEnterprise = () => {
           </Typography>
 
           <PlatformsContainer>
-            <StyledPlatformDistribution
-              src="/images/landing-page/enterprise/google-play.png"
-              alt=""
-              onClick={() => router.push("#")}
-            />
-            <StyledPlatformDistribution
-              src="/images/landing-page/enterprise/app-store.png"
-              alt=""
-              onClick={() => router.push("#")}
-            />
+            <a href="/aplicativos/android/release-0.1.apk" download>
+              <StyledPlatformDistribution
+                src="/images/landing-page/enterprise/google-play.png"
+                alt=""
+              />
+            </a>
+            <a href="/aplicativos/ios/release-0.1.apk" download>
+              <StyledPlatformDistribution
+                src="/images/landing-page/enterprise/app-store.png"
+                alt=""
+                onClick={() => router.push("#")}
+              />
+            </a>
           </PlatformsContainer>
         </Grid>
 

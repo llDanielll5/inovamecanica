@@ -417,7 +417,7 @@ const Container = styled(Box)`
     padding: 20px;
   }
 `;
-const StyledAccordion = styled(Accordion)`
+export const StyledAccordion = styled(Accordion)`
   width: 100%;
   border: 1px solid rgba(0, 51, 102, 0.35);
   border-radius: 8px;

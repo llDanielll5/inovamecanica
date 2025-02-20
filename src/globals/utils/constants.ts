@@ -1,5 +1,5 @@
 export const CONTACTS = {
-  WHATSAPP: "",
+  WHATSAPP: "554391471175",
   EMAIL: "",
   INSTAGRAM: "",
   FACEBOOK: "",

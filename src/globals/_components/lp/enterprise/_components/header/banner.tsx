@@ -56,8 +56,8 @@ const Container = styled(Box)`
       rgba(0, 0, 0, 0.7) 60%,
       rgba(0, 0, 0, 0.9) 90%
     ),
-    url(/images/landing-page/enterprise/banner.png);
-  background-position: center;
+    url(/images/landing-page/enterprise/banner1.png);
+  background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 5rem 9%;

@@ -1,10 +1,16 @@
-import LandingPageEnterprises from "@/globals/_components/lp/enterprise";
 import Head from "next/head";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import LandingPageEnterprises from "@/globals/_components/lp/enterprise";
+import { CONTACTS } from "@/globals/utils/constants";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
+
+  const msg = `Olá!! Gostaria de entender mais sobre a EvoSabores.`;
+  const zapHref = `https://api.whatsapp.com/send?phone=${
+    CONTACTS.WHATSAPP
+  }&text=${encodeURIComponent(msg)}`;
 
   return (
     <>
@@ -18,6 +24,15 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <a
+        href={zapHref}
+        className="scrollup"
+        id="scroll_up"
+        target={"_blank"}
+        rel="noopener noreferrer"
+      >
+        <WhatsAppIcon sx={{ color: "white" }} fontSize="large" />
+      </a>
       <LandingPageEnterprises />
     </>
   );

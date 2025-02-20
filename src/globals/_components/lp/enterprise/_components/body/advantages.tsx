@@ -15,7 +15,7 @@ const AdvantagesEnterprise = () => {
     <Container id="advantages">
       <InnerContainer>
         <PicturesSide container spacing={width! > 760 ? 1 : 0.6}>
-          <Grid item lg={4} md={6} xs={4} alignSelf={"flex-end"}>
+          <Grid item lg={4} md={6} xs={4} alignSelf={"center"}>
             <CardVisibility>
               <StyledGroupIcon />
               <AnimatedNumber value={35} variant={"h3"} duration={2000} />
@@ -26,16 +26,18 @@ const AdvantagesEnterprise = () => {
           </Grid>
           <Grid item lg={8} md={2} xs={8}>
             <img
-              src="/images/landing-page/enterprise/why1.png"
+              src="/images/landing-page/enterprise/why3.jpg"
               alt=""
               width={width! > 760 ? width! / 3.5 : width! / 1.75}
+              style={{ maxHeight: 280, objectFit: "cover", borderRadius: 10 }}
             />
           </Grid>
           <Grid item lg={10}>
             <img
-              src="/images/landing-page/enterprise/why2.png"
+              src="/images/landing-page/enterprise/why4.jpg"
               alt=""
               width={width! > 760 ? width! / 3 : width! / 1.5}
+              style={{ maxHeight: 280, objectFit: "cover", borderRadius: 10 }}
             />
           </Grid>
         </PicturesSide>

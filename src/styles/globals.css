@@ -32,6 +32,26 @@ a {
   font-size: 1rem;
 }
 
+.scrollup {
+  position: fixed;
+  right: 2rem;
+  bottom: 2rem;
+  box-shadow: 0 8px 12px hsla(228, 66%, 45%, 0.1);
+  display: inline-flex;
+  background-color: #34af23;
+  padding: 0.7rem;
+  border-radius: 50%;
+  font-size: 3rem;
+  z-index: 1000;
+  transition: 0.3s;
+  border: 1px solid rgba(200, 200, 200, 0.5);
+}
+
+.scrollup:hover {
+  transform: translateY(-0.25rem);
+  color: hsl(228, 66%, 53%);
+}
+
 @media screen and (max-width: 500px) {
   .recover-password-input {
     width: 1rem;

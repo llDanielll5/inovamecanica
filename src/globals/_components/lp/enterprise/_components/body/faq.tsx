@@ -1,12 +1,20 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { Box, Grid, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  ImageList,
+  ImageListItem,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { StyledButton } from "../header/banner";
 import { COLORS } from "@/globals/utils/colors";
 import AccordionComponent from "@/globals/_components/accordion";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 import useWindowSize from "@/globals/hooks/useWindowSize";
+import { InovaLogo } from "@/globals/icons/inova-logo";
 
 const faq = [
   {
@@ -40,6 +48,13 @@ const detailsAccordionStyle = {
   fontWeight: 400,
 };
 
+const imagesData = [
+  { title: "", img: "/images/landing-page/enterprise/tractor.png" },
+  { title: "", img: "/images/landing-page/enterprise/truck1.png" },
+  { title: "", img: "/images/landing-page/enterprise/car1.png" },
+  { title: "", img: "/images/landing-page/enterprise/bike1.png" },
+];
+
 const FAQEnterprise = () => {
   const { width } = useWindowSize();
   return (
@@ -55,7 +70,7 @@ const FAQEnterprise = () => {
             começar a receber novos clientes!
           </Typography>
 
-          {width! > 760 && (
+          {/* {width! > 760 && (
             <StyledButton
               variant="contained"
               colors={["#006DDB"]}
@@ -64,7 +79,7 @@ const FAQEnterprise = () => {
             >
               Precisa de ajuda?
             </StyledButton>
-          )}
+          )} */}
         </LeftSide>
 
         <RightSide>
@@ -82,6 +97,7 @@ const FAQEnterprise = () => {
                 "&.Mui-expanded": {
                   backgroundColor: "#DADADA",
                 },
+                "&:before": { height: "0px" },
               }}
               titleStyle={titleAccordionStyle}
               detailsStyle={detailsAccordionStyle}
@@ -89,7 +105,7 @@ const FAQEnterprise = () => {
           ))}
         </RightSide>
 
-        {width! < 760 && (
+        {/* {width! < 760 && (
           <StyledButton
             variant="contained"
             colors={["#006DDB"]}
@@ -98,47 +114,24 @@ const FAQEnterprise = () => {
           >
             Precisa de ajuda?
           </StyledButton>
-        )}
+        )} */}
       </FaqContainer>
 
       <ContactContainer id="contact">
-        <BottomImage src="/images/landing-page/enterprise/mechanic.png" />
-        <FormContainer>
-          <Typography variant={width! > 760 ? "h2" : "h3"} color="white" pb={4}>
-            Tem Dúvidas? Nós podemos Ajudar!
-          </Typography>
-          <Grid container spacing={2} rowGap={"1rem"}>
-            <Grid item lg={12} xs={12}>
-              <StyledTextField variant="outlined" label="Nome" fullWidth />
-            </Grid>
-            <Grid item lg={6} xs={6}>
-              <StyledTextField variant="outlined" label="Telefone" fullWidth />
-            </Grid>
-            <Grid item lg={6} xs={6}>
-              <StyledTextField variant="outlined" label="Email" fullWidth />
-            </Grid>
-            <Grid item lg={12} xs={12}>
-              <StyledTextField
-                variant="outlined"
-                label="Mensagem"
-                fullWidth
-                multiline
-                rows={5}
+        <ImageList variant="quilted" cols={width! > 760 ? 4 : 2} gap={1}>
+          {imagesData.map((item, index) => (
+            <ImageListItem key={index}>
+              <img
+                srcSet={`${item.img}?w=161&fit=crop&auto=format&dpr=2 2x`}
+                src={`${item.img}?w=161&fit=crop&auto=format`}
+                alt={item.title}
+                loading="lazy"
+                style={{ maxHeight: 300, minHeight: width! > 760 ? 400 : 300 }}
               />
-            </Grid>
-
-            <Grid item lg={6}>
-              <StyledButton
-                variant="contained"
-                colors={["#CC7818", "#ECAA5E"]}
-                textColor="white"
-                endIcon={<ArrowRightAltIcon />}
-              >
-                enviar
-              </StyledButton>
-            </Grid>
-          </Grid>
-        </FormContainer>
+            </ImageListItem>
+          ))}
+        </ImageList>
+        <StyledLogo />
       </ContactContainer>
     </Container>
   );
@@ -151,7 +144,7 @@ const Container = styled(Box)`
 const FaqContainer = styled(Box)`
   background-color: #f4f4f4;
   padding: 80px 7% 200px 7%;
-  min-height: 713px;
+  min-height: 500px;
   width: 100%;
   background-image: url(/images/landing-page/enterprise/faq-background.png);
   background-position: center left;
@@ -184,23 +177,29 @@ const RightSide = styled(Box)`
     width: 100%;
   }
 `;
-
-const BottomImage = styled("img")`
+const StyledLogo = styled(InovaLogo)`
   position: absolute;
-  bottom: -4px;
-  right: 0;
-  width: 80%;
-  max-height: 850px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 200px;
+  height: 200px;
 
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
-    display: none;
+    width: 110px;
+    height: 110px;
   }
 `;
 
 const ContactContainer = styled(Box)`
-  min-height: 675px;
+  min-height: 400px;
   width: 100%;
-
+  /* background-image: url(/images/landing-page/enterprise/tractor.png); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
     min-height: 0px;
   }

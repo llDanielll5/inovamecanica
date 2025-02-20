@@ -29,6 +29,7 @@ const StyledLogo = styled(InovaLogo)`
   transform: translateX(-5%);
   width: 200px;
   height: 200px;
+  z-index: 1000;
 
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
     width: 110px;

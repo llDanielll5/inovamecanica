@@ -1,13 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useWindowSize from "@/globals/hooks/useWindowSize";
 import styled from "@emotion/styled";
 import { Box, Button, Typography } from "@mui/material";
 import { WIDTH_BREAKPOINTS } from "@/globals/utils/constants";
 
+const images = [
+  "/images/landing-page/enterprise/banner1.png",
+  "/images/landing-page/enterprise/banner2.jpg",
+  "/images/landing-page/enterprise/banner3.jpg",
+];
+
 const BannerEnterprise = () => {
   const { width } = useWindowSize();
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Container>
+      {images.map((src, index) => (
+        <BackgroundImage
+          key={index}
+          src={src}
+          active={index === currentImage}
+        />
+      ))}
       <BannerInformations>
         <Typography
           variant={width! > 760 ? "h1" : "h3"}
@@ -50,33 +73,40 @@ const BannerEnterprise = () => {
 };
 
 const Container = styled(Box)`
-  background-image: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.7) 60%,
-      rgba(0, 0, 0, 0.9) 90%
-    ),
-    url(/images/landing-page/enterprise/banner1.png);
-  background-position: top;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 5rem 9%;
+  position: relative;
+  width: 100%;
+  min-height: 500px;
+  max-height: 500px;
+  overflow: hidden;
   display: flex;
   align-items: flex-end;
   flex-direction: column;
+  padding: 5rem 9%;
+`;
 
-  @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
-    background-image: linear-gradient(
-        to right,
+const BackgroundImage = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<{ src: string; active: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: ${({ src }) => `linear-gradient(
+      to right,
 
-        rgba(0, 0, 0, 0.5) 0%,
-        rgba(0, 0, 0, 0.9) 90%
-      ),
-      url(/images/landing-page/enterprise/mobile-banner.png);
-  }
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.9) 90%
+    ),url(${src})`};
+  background-size: cover;
+  background-position: center;
+  opacity: ${({ active }) => (active ? 1 : 0)};
+  transition: opacity 1.5s ease-in-out;
 `;
 
 const BannerInformations = styled(Box)`
+  position: relative;
+  z-index: 2;
   width: 40%;
   display: flex;
   flex-direction: column;
@@ -84,6 +114,7 @@ const BannerInformations = styled(Box)`
 
   @media screen and (max-width: ${WIDTH_BREAKPOINTS.PHONE}px) {
     width: 100%;
+    text-align: center;
   }
 `;
 
